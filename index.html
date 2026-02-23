@@ -2085,7 +2085,11 @@ body.compose-mode { padding-bottom: 0; }
                 <div class="compose-hint-divider"></div>
                 <span class="compose-hint"><kbd>Shift+Enter</kbd> line break</span>
                 <div class="compose-hint-divider"></div>
-                <span class="compose-hint"><kbd>###</kbd> chapter</span>
+                <span class="compose-hint"><kbd>###:</kbd> chapter</span>
+                <div class="compose-hint-divider"></div>
+                <span class="compose-hint"><kbd>##:</kbd> section</span>
+                <div class="compose-hint-divider"></div>
+                <span class="compose-hint"><kbd>#:</kbd> break</span>
                 <div class="compose-hint-divider"></div>
                 <span class="compose-hint"><kbd>↑↓</kbd> navigate</span>
             </div>
@@ -2161,12 +2165,16 @@ body.compose-mode { padding-bottom: 0; }
                 <span class="mode-key-label">[ ]</span>
                 <span class="mode-key-desc">Note</span>
             </button>
-            <button class="mode-key compose-key" id="composeKeySubchapter" aria-label="Insert subchapter break" title="Insert subchapter ###">
-                <span class="mode-key-label">###</span>
+            <button class="mode-key compose-key" id="composeKeyChapter" aria-label="Insert chapter break" title="Insert chapter ###:">
+                <span class="mode-key-label">###:</span>
                 <span class="mode-key-desc">Chapter</span>
             </button>
-            <button class="mode-key compose-key" id="composeKeyBreak" aria-label="Insert line break //" title="Insert line break //">
-                <span class="mode-key-label">//</span>
+            <button class="mode-key compose-key" id="composeKeySubchapter" aria-label="Insert subchapter break" title="Insert subchapter ##:">
+                <span class="mode-key-label">##:</span>
+                <span class="mode-key-desc">Section</span>
+            </button>
+            <button class="mode-key compose-key" id="composeKeyBreak" aria-label="Insert line break #:" title="Insert line break #:">
+                <span class="mode-key-label">#:</span>
                 <span class="mode-key-desc">Break</span>
             </button>
             <button class="mode-key compose-key" id="composeKeyImage" aria-label="Map image to phrase" title="Map image to phrase">
@@ -2268,11 +2276,7 @@ const parallax = { text: { x: 0, y: 0, targetX: 0, targetY: 0 }, image: { x: 0, 
 // DATA
 // ===================================
 const chapters = [
-    { id: 0, title: "Arrival", startText: "That feeling of arrival" },
-    { id: 1, title: "The Pause", startText: "Most tools don't honor that moment" },
-    { id: 2, title: "The Format", startText: "This format was built inside that pause" },
-    { id: 3, title: "That Rhythm", startText: "That rhythm has a name" },
-    { id: 4, title: "Begin", startText: "You're here now" }
+    { id: 0, title: "Arrival", startText: "That feeling of arrival" }
 ]
 
 const imageMap = {
@@ -2359,28 +2363,28 @@ You know it as a reader. A sentence lands. Something shifts. You sit with it bef
 
 You know it as a writer too — maybe better.
 
-The period is the decision. [Not the word. Not the sentence. The full stop. The moment you commit to what you just said.]//
+The period is the decision. [Not the word. Not the sentence. The full stop. The moment you commit to what you just said.]#:
 
-### Most tools don't honor that moment.
+###:Most tools don't honor that moment.
 They give you a cursor blinking past it. A word count that doesn't care where you stopped. A paragraph that swallows the period whole and keeps going.
 
 They were built for output. Writing isn't output.
 
-Writing is the pause after the period. The reread. The small surgery. The moment you realize the true sentence was the one before the one you just wrote.//
+Writing is the pause after the period. The reread. The small surgery. The moment you realize the true sentence was the one before the one you just wrote.#:
 
-### This format was built inside that pause.
+###:This format was built inside that pause.
 You write a sentence. You place the period. The sentence enters the piece and becomes real. [Not a draft. Not a line in a document. A thing that exists, one at a time, in the order you meant.]
 
 Then you stop. You reflect. You rewrite. You reject. You arrive at the next true thing.
 
-Then you write it down and end it with a period.//
+Then you write it down and end it with a period.#:
 
-### That rhythm has a name.
+###:That rhythm has a name.
 The drop from the elevated to the plain. The sentence after the profound one. The one that just tells the truth.
 
-Bathos. [Lowercase. It belongs to every writer who has ever stopped after a period and started again.]//
+Bathos. [Lowercase. It belongs to every writer who has ever stopped after a period and started again.]#:
 
-### You're here now.
+###:You're here now.
 Write one sentence.
 
 End it with a period.
@@ -3065,12 +3069,19 @@ function detectTouch() {
 // NARRATIVE PARSING
 // ===================================
 function parseNarrative(text) {
+    // ── Marker legend ──
+    // ###:Title  → chapter break (must be on its own line or sentence boundary)
+    // ##:Title   → subchapter break
+    // #:         → line break (single blank line; any text after colon is first sentence of next line)
+    // [ … ]      → bracket aside
+    // /          → allowed freely in prose (no special meaning)
+
     const parts = [];
     let idCounter = 0;
     const segments = text.split(/(\[|\])/);
     let inBracket = false;
     let bracketId = null;
-    
+
     for (let i = 0; i < segments.length; i++) {
         const segment = segments[i];
         if (segment === '[') {
@@ -3085,22 +3096,35 @@ function parseNarrative(text) {
                 const bracket = parts.find(p => p.id === bracketId);
                 if (bracket) bracket.content = segment.trim();
             } else {
-                const lineSegments = segment.split(/(\/\/|\/)/);
+                // Split on #: markers — capture the delimiter so we can classify each chunk
+                // Order matters: ###: before ##: before #:
+                const lineSegments = segment.split(/(###:[^\n]*|##:[^\n]*|#:)/);
                 for (let j = 0; j < lineSegments.length; j++) {
                     const lineSegment = lineSegments[j];
-                    if (lineSegment === '//') {
-                        parts.push({ type: 'line-break', id: idCounter++, breakType: 'double' });
-                    } else if (lineSegment === '/') {
+                    if (!lineSegment) continue;
+
+                    if (lineSegment.startsWith('###:')) {
+                        // Chapter break — title follows the colon
+                        const title = lineSegment.substring(4).trim();
+                        if (title) parts.push({ type: 'chapter-marker', id: idCounter++, title });
+                        continue;
+                    }
+                    if (lineSegment.startsWith('##:')) {
+                        const title = lineSegment.substring(3).trim();
+                        parts.push({ type: 'subchapter-break', id: idCounter++, title: title || '' });
+                        continue;
+                    }
+                    if (lineSegment === '#:') {
                         parts.push({ type: 'line-break', id: idCounter++, breakType: 'single' });
-                    } else if (lineSegment.trim()) {
+                        continue;
+                    }
+
+                    // Plain prose — split into sentences
+                    if (lineSegment.trim()) {
                         const sentences = lineSegment.split(/(?<=[.!?])\s+/);
                         sentences.forEach(sentence => {
                             const trimmedSentence = sentence.trim();
                             if (!trimmedSentence) return;
-                            if (trimmedSentence.startsWith('### ')) {
-                                parts.push({ type: 'subchapter-break', id: idCounter++, title: trimmedSentence.substring(4).trim() });
-                                return;
-                            }
                             if (/^\(\d+\)\s/.test(trimmedSentence)) {
                                 const match = trimmedSentence.match(/^\((\d+)\)\s(.+)/);
                                 if (match) { parts.push({ type: 'numbered-bullet', id: idCounter++, number: match[1], text: match[2].trim() }); return; }
@@ -3572,20 +3596,38 @@ function render() {
     let currentActiveChapter = 0;
 
     parsedContent.forEach(part => {
+        // ── Legacy startText-based chapter detection (for chapters[] array entries) ──
         if (nextChapterIndex < chapters.length) {
             const nextChapter = chapters[nextChapterIndex];
-            const textContent = part.type === 'sentence' || part.type === 'bullet' || part.type === 'numbered-bullet' ? part.text : (part.type === 'bracket' ? part.content : '');
-            if (textContent && textContent.includes(nextChapter.startText)) {
-                state.chapterStartIndices[nextChapter.id] = sentenceCount;
-                const chapterBreak = document.createElement('div');
-                chapterBreak.className = 'chapter-break';
-                chapterBreak.dataset.chapterId = nextChapter.id;
-                chapterBreak.innerHTML = `<span class="chapter-number">Chapter ${String(nextChapter.id + 1).padStart(2, '0')}</span><span class="chapter-title">${nextChapter.title}</span>`;
-                chapterBreak.addEventListener('click', () => { showUI(); openDropdownFromChapterBreak(chapterBreak, nextChapter.id); });
-                fragment.appendChild(chapterBreak);
-                currentActiveChapter = nextChapter.id;
-                nextChapterIndex++;
+            if (nextChapter.startText) {
+                const textContent = part.type === 'sentence' || part.type === 'bullet' || part.type === 'numbered-bullet' ? part.text : (part.type === 'bracket' ? part.content : '');
+                if (textContent && textContent.includes(nextChapter.startText)) {
+                    state.chapterStartIndices[nextChapter.id] = sentenceCount;
+                    const chapterBreak = document.createElement('div');
+                    chapterBreak.className = 'chapter-break';
+                    chapterBreak.dataset.chapterId = nextChapter.id;
+                    chapterBreak.innerHTML = `<span class="chapter-number">Chapter ${String(nextChapter.id + 1).padStart(2, '0')}</span><span class="chapter-title">${nextChapter.title}</span>`;
+                    chapterBreak.addEventListener('click', () => { showUI(); openDropdownFromChapterBreak(chapterBreak, nextChapter.id); });
+                    fragment.appendChild(chapterBreak);
+                    currentActiveChapter = nextChapter.id;
+                    nextChapterIndex++;
+                }
             }
+        }
+
+        // ── ###: inline chapter marker ──
+        if (part.type === 'chapter-marker') {
+            const newChapterId = chapters.length;
+            chapters.push({ id: newChapterId, title: part.title, startText: null });
+            state.chapterStartIndices.push(sentenceCount);
+            const chapterBreak = document.createElement('div');
+            chapterBreak.className = 'chapter-break';
+            chapterBreak.dataset.chapterId = newChapterId;
+            chapterBreak.innerHTML = `<span class="chapter-number">Chapter ${String(newChapterId + 1).padStart(2, '0')}</span><span class="chapter-title">${part.title}</span>`;
+            chapterBreak.addEventListener('click', () => { showUI(); openDropdownFromChapterBreak(chapterBreak, newChapterId); });
+            fragment.appendChild(chapterBreak);
+            currentActiveChapter = newChapterId;
+            return;
         }
 
         if (part.type === 'sentence') {
@@ -4221,6 +4263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const clusterBracket = document.getElementById('composeKeyBracket');
         const clusterSection = document.getElementById('composeKeySubchapter');
         const clusterBreak   = document.getElementById('composeKeyBreak');
+        const clusterChapter = document.getElementById('composeKeyChapter');
         const clusterImage   = document.getElementById('composeKeyImage');
         const clusterDelete  = document.getElementById('composeKeyDelete');
         const clusterTheme   = document.getElementById('modeKeyTCompose');
@@ -4371,40 +4414,56 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // ── Insert new sentence ──
-            // Check for chapter/subchapter prefix
-            if (raw.startsWith('### ')) {
+            // ###: Chapter break
+            if (raw.startsWith('###:')) {
                 const title = raw.substring(4).trim();
-
-                // Create a new chapter entry
                 const newChapterId = chapters.length;
                 chapters.push({ id: newChapterId, title: title, startText: null });
                 state.chapterStartIndices.push(state.allSentenceElements.length);
-
-                // Build a proper chapter-break element (matches render() output)
                 const chapterBreak = document.createElement('div');
                 chapterBreak.className = 'chapter-break';
                 chapterBreak.dataset.chapterId = newChapterId;
                 chapterBreak.innerHTML = `<span class="chapter-number">Chapter ${String(newChapterId + 1).padStart(2, '0')}</span><span class="chapter-title">${title}</span>`;
                 chapterBreak.addEventListener('click', () => { showUI(); openDropdownFromChapterBreak(chapterBreak, newChapterId); });
                 stream.appendChild(chapterBreak);
-
                 buildChapterDropdown();
                 updateChapterProgress();
                 input.value = '';
                 input.style.height = 'auto';
                 if (hudSubmit) hudSubmit.disabled = true;
                 updateWordCount();
-
                 Toast.show({ id: `chapter-added-${Date.now()}`, icon: '📖', message: `Chapter ${newChapterId + 1}: <span class="toast-accent">${title}</span> added`, duration: 3000, force: true });
                 return;
             }
 
-            // Check for line break
-            if (raw === '//' || raw === '/') {
+            // ##: Subchapter break
+            if (raw.startsWith('##:')) {
+                const title = raw.substring(3).trim();
+                const el = document.createElement('div');
+                el.className = 'subchapter-break';
+                el.innerHTML = `<span class="subchapter-title">${title}</span>`;
+                state.subchapterStartIndices.push({ sentenceIndex: state.allSentenceElements.length, title });
+                stream.appendChild(el);
+                input.value = '';
+                input.style.height = 'auto';
+                if (hudSubmit) hudSubmit.disabled = true;
+                updateWordCount();
+                return;
+            }
+
+            // #: Line break
+            if (raw === '#:' || raw.startsWith('#:')) {
                 const br = document.createElement('span');
                 br.className = 'line-break-spacer';
-                br.innerHTML = raw === '//' ? '<br><br>' : '<br>';
+                br.innerHTML = '<br>';
                 stream.appendChild(br);
+                // Any text after #: becomes a new sentence
+                const remainder = raw.substring(2).trim();
+                if (remainder) {
+                    input.value = remainder;
+                    commitSentence();
+                    return;
+                }
                 input.value = '';
                 input.style.height = 'auto';
                 if (hudSubmit) hudSubmit.disabled = true;
@@ -4565,10 +4624,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (clusterBracket) clusterBracket.addEventListener('click', (e) => { e.stopPropagation(); insertBracket(); input.focus(); });
 
+        // ── Chapter quick-insert ──
+        if (clusterChapter) clusterChapter.addEventListener('click', (e) => {
+            e.stopPropagation();
+            input.value = '###:';
+            input.focus();
+            // Place cursor after the colon
+            input.setSelectionRange(4, 4);
+            if (hudSubmit) hudSubmit.disabled = false;
+        });
+
         // ── Subchapter quick-insert ──
         if (clusterSection) clusterSection.addEventListener('click', (e) => {
             e.stopPropagation();
-            input.value = '### ';
+            input.value = '##:';
             input.focus();
             if (hudSubmit) hudSubmit.disabled = false;
         });
@@ -4576,7 +4645,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // ── Line break quick-insert ──
         if (clusterBreak) clusterBreak.addEventListener('click', (e) => {
             e.stopPropagation();
-            input.value = '//';
+            input.value = '#:';
             if (hudSubmit) hudSubmit.disabled = false;
             commitSentence();
         });
