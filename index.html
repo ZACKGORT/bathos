@@ -2272,82 +2272,16 @@ let composeActive = false; // module-level flag so highlightSentence can read it
 
 
 
-
 // ===================================
 // DATA
 // ===================================
 const chapters = [
-    { id: 0, title: "Arrival", startText: "That feeling of arrival" }
+   // { id: 0, title: "Arrival", startText: "That feeling of arrival" }//
 ]
 
 const imageMap = {
     'every story': 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1200&q=80',
-    'weight it deserves': 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&q=80',
-    'sentence by sentence': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1200&q=80',
-    'image and the word': 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=1200&q=80',
-    'architecture of attention': 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&q=80',
-    'first draft': 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&q=80',
-    'college application': 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&q=80',
-    'post it or publish it': 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1200&q=80',
-    'personal essay': 'https://images.unsplash.com/photo-1471107191679-f26174d2d41e?w=1200&q=80',
-    'writing toward a moment': 'https://images.unsplash.com/photo-1519791883288-dc8bd696e667?w=1200&q=80',
-    'witnessed': 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1200&q=80',
-    'something real to say': 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=1200&q=80',
-    'format demands it': 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1200&q=80',
-    'one line at a time': 'https://images.unsplash.com/photo-1502003148287-a82ef80a6abc?w=1200&q=80',
-    'forty-one papers': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&q=80',
-    'twelve people read': 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1200&q=80',
-    'dense thinking walkable': 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1200&q=80',
-    'philosopher': 'https://images.unsplash.com/photo-1544717305-996b815c338c?w=1200&q=80',
-    'each sentence is a step': 'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=1200&q=80',
-    'felt context': 'https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?w=1200&q=80',
-    'academic prose': 'https://images.unsplash.com/photo-1415226597516-61cf94eb6c7a?w=1200&q=80',
-    'readable without being diminished': 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=1200&q=80',
-    'PDF handout': 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=1200&q=80',
-    'Goldberg Variations': 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=1200&q=80',
-    'concert hall': 'https://images.unsplash.com/photo-1540908489236-15aac66d9a53?w=1200&q=80',
-    'manuscript page': 'https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=1200&q=80',
-    'inside the music': 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=1200&q=80',
-    'piano keys': 'https://images.unsplash.com/photo-1552422535-c45813c61732?w=1200&q=80',
-    'different kind of preparation': 'https://images.unsplash.com/photo-1444628838545-ac4016a5418a?w=1200&q=80',
-    'case study': 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200&q=80',
-    'sketch on a napkin': 'https://images.unsplash.com/photo-1568209865332-a15790aed756?w=1200&q=80',
-    'client call': 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=1200&q=80',
-    'data came back wrong': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80',
-    'felt the process': 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=80',
-    'trust is different': 'https://images.unsplash.com/photo-1444210971048-6130cf0c46cf?w=1200&q=80',
-    'pitch than a PDF': 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&q=80',
-    'award submissions': 'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=1200&q=80',
-    'credentials pages': 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80',
-    'capabilities deck': 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1200&q=80',
-    'one thing, deeply': 'https://images.unsplash.com/photo-1455849318743-b2233052fcff?w=1200&q=80',
-    'specific room': 'https://images.unsplash.com/photo-1577412647305-991150c7d163?w=1200&q=80',
-    'thought carefully': 'https://images.unsplash.com/photo-1488229297570-58520851e868?w=1200&q=80',
-    'not a writer': 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1200&q=80',
-    'photo dump': 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6?w=1200&q=80',
-    'lost someone': 'https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=1200&q=80',
-    'real artifact': 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=1200&q=80',
-    'kids to read': 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=1200&q=80',
-    'image carries': 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&q=80',
-    'actual experience': 'https://images.unsplash.com/photo-1504805572947-34fad45aed93?w=1200&q=80',
-    'two in the morning': 'https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=1200&q=80',
-    'architectural constraint': 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80',
-    'sentence-by-sentence reveal': 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1200&q=80',
-    'closer to installation': 'https://images.unsplash.com/photo-1541367777708-7905fe3296c0?w=1200&q=80',
-    'transported rather than informed': 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1200&q=80',
-    'hide UI mode': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80',
-    'readership': 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1200&q=80',
-    'proof of concept': 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200&q=80',
-    'carry an image': 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&q=80',
-    'leaving for the last time': 'https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=1200&q=80',
-    'find its shape': 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&q=80',
-    'write something true': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1200&q=80',
-    'the format will hold it': 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&q=80',
-    'feeling of arrival': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80',
-    'pause after the period': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1200&q=80',
-    'small surgery': 'https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?w=1200&q=80',
-    'cursor blinking': 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=1200&q=80',
-    'write one sentence': 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=1200&q=80'
+    
 }
 
 const phraseRegexMap = new Map();
@@ -2356,41 +2290,26 @@ Object.keys(imageMap).forEach(phrase => {
     phraseRegexMap.set(phrase, new RegExp(`\\b${escapedPhrase}\\b`, 'gi'));
 });
 
-const narrative = `That feeling of arrival.
+const narrative = `
+###:The Arrival.
+Imagine that. You just arrived at a website. But, something seems amiss. No signal? No signage? No salutation?
 
-It happens at the end of a sentence. [Not the beginning. Not somewhere in the middle. At the period — the moment the thought closes and becomes a thing.]
+###:The Fear.
+You see an out. You move. It moves. You act. It reacts. [You scroll; it moves. You are the constant. ]
 
-You know it as a reader. A sentence lands. Something shifts. You sit with it before the next one comes.
+###:That Feeling.
+You didn't escape from where you were. You discovered where you stood.
 
-You know it as a writer too — maybe better.
+#: It came with intentionality. It happened by accident. It was good.
+##: You did it again. And again.
 
-The period is the decision. [Not the word. Not the sentence. The full stop. The moment you commit to what you just said.]#:
+There's a word for this moment. That moment. A moment by itself. One moment — just written.
 
-###:Most tools don't honor that moment.
-They give you a cursor blinking past it. A word count that doesn't care where you stopped. A paragraph that swallows the period whole and keeps going.
+###:BAY-BOSS
+Baybos - fill this in
+`
 
-They were built for output. Writing isn't output.
 
-Writing is the pause after the period. The reread. The small surgery. The moment you realize the true sentence was the one before the one you just wrote.#:
-
-###:This format was built inside that pause.
-You write a sentence. You place the period. The sentence enters the piece and becomes real. [Not a draft. Not a line in a document. A thing that exists, one at a time, in the order you meant.]
-
-Then you stop. You reflect. You rewrite. You reject. You arrive at the next true thing.
-
-Then you write it down and end it with a period.#:
-
-###:That rhythm has a name.
-The drop from the elevated to the plain. The sentence after the profound one. The one that just tells the truth.
-
-Bathos. [Lowercase. It belongs to every writer who has ever stopped after a period and started again.]#:
-
-###:You're here now.
-Write one sentence.
-
-End it with a period.
-
-The format will do the rest.`
 
 // ===================================
 // UTILITY FUNCTIONS
