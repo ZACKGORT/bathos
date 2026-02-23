@@ -26,7 +26,7 @@
 /* ===================================
    CSS VARIABLES & THEMES
    =================================== */
-:root {
+   :root {
     /* ── Palette ── */
     --bg-color: #000000;
     --ink: #ffffff;
@@ -427,7 +427,6 @@ body.layout-split .mobile-right-rail { display: none !important; }
     }
     .mode-drag-handle { display: none; }
     .mode-key#modeKeyF,
-    .mode-key#modeKeyH,
     .mode-key#modeKeyC,
     .mode-key#modeKeySpace { display: none; }
     .mode-key {
@@ -1513,7 +1512,7 @@ body.compose-mode .compose-bar {
 .compose-bar-inner {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     padding: 10px 20px 0;
 }
 
@@ -1531,13 +1530,13 @@ body.compose-mode .compose-bar {
         border-right: none;
         border-bottom: none;
         box-shadow: none;
-        padding: 0 0 8px;
+        padding: 0 0 12px;
     }
     body.compose-mode .compose-bar {
         transform: translateY(0) !important;
     }
     .compose-drag-handle { display: none; }
-    .compose-bar-inner { padding: 8px 14px 0; gap: 6px; }
+    .compose-bar-inner { padding: 10px 16px 0; }
 }
 
 /* Compose header row */
@@ -1545,12 +1544,6 @@ body.compose-mode .compose-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
-}
-.compose-header-controls {
-    display: flex;
-    align-items: center;
-    gap: 6px;
 }
 .compose-label {
     font-family: var(--ui-font);
@@ -1559,13 +1552,12 @@ body.compose-mode .compose-bar {
     text-transform: uppercase;
     letter-spacing: 0.12em;
     opacity: 0.6;
-    flex-shrink: 0;
 }
 .compose-chapter-select {
     font-family: var(--ui-font);
     font-size: 9px;
     color: var(--ink-2);
-    background: var(--surface);
+    background: none;
     border: 1px solid var(--border);
     border-radius: 3px;
     padding: 3px 8px;
@@ -1576,7 +1568,6 @@ body.compose-mode .compose-bar {
     -webkit-appearance: none;
     outline: none;
     transition: border-color 0.15s ease, color 0.15s ease;
-    max-width: 140px;
 }
 .compose-chapter-select:focus,
 .compose-chapter-select:hover {
@@ -1584,93 +1575,69 @@ body.compose-mode .compose-bar {
     color: var(--accent);
 }
 .compose-chapter-select option {
-    background: var(--surface-raised);
+    background: #0a0a0a;
     color: var(--ink);
 }
 
-/* Hints tooltip button — mobile only */
-.compose-hints-btn {
-    display: none;
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    color: var(--ink-3);
-    padding: 3px 5px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    line-height: 0;
-    flex-shrink: 0;
+/* Input row */
+.compose-input-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
 }
-.compose-hints-btn svg { width: 13px; height: 13px; }
-.compose-hints-btn:hover { border-color: var(--accent); color: var(--accent); }
-@media (max-width: 768px) {
-    .compose-hints-btn { display: flex; align-items: center; justify-content: center; }
-}
-
-/* Close button — always present, styled like a small key */
-.compose-close-btn {
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    color: var(--ink-3);
-    font-family: var(--ui-font);
-    font-size: 10px;
-    padding: 3px 7px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    line-height: 1;
-    flex-shrink: 0;
-}
-.compose-close-btn:hover { border-color: var(--accent); color: var(--accent); }
-@media (min-width: 769px) {
-    /* Desktop: hide the ✕ — Escape or pencil toggle handles it */
-    .compose-close-btn { display: none; }
-}
-
-/* Desktop word count inline in header */
-.compose-wordcount-desktop {
-    white-space: nowrap;
-    opacity: 0.5;
-}
-@media (max-width: 768px) {
-    .compose-wordcount-desktop { display: none; }
-}
-
-/* Input — full width, no siblings on mobile */
 .compose-input {
-    width: 100%;
+    flex: 1;
     background: rgba(255,255,255,0.04);
     border: 1px solid var(--border);
     border-radius: 6px;
-    padding: 10px 14px;
+    padding: 12px 16px;
     font-family: var(--body-font);
     font-size: clamp(16px, 2vw, 20px);
     color: var(--ink);
     outline: none;
     resize: none;
-    min-height: 48px;
+    min-height: 52px;
     max-height: 180px;
     line-height: 1.6;
     transition: border-color 0.2s ease, background 0.2s ease;
     caret-color: var(--accent);
     overflow-y: auto;
-    box-sizing: border-box;
 }
-.compose-input::placeholder { color: var(--ink-3); opacity: 0.5; }
+.compose-input::placeholder {
+    color: var(--ink-3);
+    opacity: 0.5;
+}
 .compose-input:focus {
     border-color: rgba(218,165,32,0.4);
     background: rgba(255,255,255,0.06);
 }
 
-/* Desktop hint row */
-.compose-hints-desktop {
+/* Commit button */
+.compose-commit {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    background: var(--accent);
+    border: none;
+    color: var(--bg-color);
+    cursor: pointer;
     display: flex;
-    gap: 12px;
     align-items: center;
-    padding-bottom: 4px;
+    justify-content: center;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+    font-size: 18px;
 }
-@media (max-width: 768px) {
-    .compose-hints-desktop { display: none; }
+.compose-commit:hover { transform: scale(1.06); filter: brightness(1.1); }
+.compose-commit:active { transform: scale(0.94); }
+.compose-commit svg { width: 18px; height: 18px; fill: currentColor; }
+.compose-commit:disabled { opacity: 0.3; cursor: default; transform: none; }
+
+/* Compose footer hints */
+.compose-hints {
+    display: flex;
+    gap: 16px;
+    align-items: center;
 }
 .compose-hint {
     font-family: var(--ui-font);
@@ -1853,9 +1820,9 @@ body.compose-mode .mode-key.reader-key { display: none; }
 }
 .imagemap-grid-item:hover .item-phrase { opacity: 1; }
 
-/* HUD compose button — shows in reader mode on mobile */
+/* HUD compose button */
 .hud-compose-btn {
-    display: none;
+    display: none; /* desktop: hidden, shown via media query */
     color: var(--ink-3);
     transition: color 0.15s ease, background 0.15s ease;
 }
@@ -1864,15 +1831,15 @@ body.compose-mode .mode-key.reader-key { display: none; }
     background: var(--hover-tint);
 }
 
-/* HUD submit button — compose mode on mobile, accent colored */
-.hud-submit-btn {
+/* HUD compose exit button — mobile only, compose mode only */
+.hud-compose-exit {
     display: none;
-    color: var(--bg-color) !important;
-    background: var(--accent) !important;
-    border-color: var(--accent) !important;
-    transition: opacity 0.15s ease, filter 0.15s ease;
+    color: var(--ink-3);
+    transition: color 0.15s ease, background 0.15s ease;
 }
-.hud-submit-btn:disabled { opacity: 0.35 !important; filter: none; }
+body.compose-mode .hud-compose-exit {
+    color: var(--accent);
+}
 
 /* HUD nav group — prev/next side by side */
 .hud-nav-group {
@@ -1882,15 +1849,87 @@ body.compose-mode .mode-key.reader-key { display: none; }
 }
 
 @media (max-width: 768px) {
-    /* Reader mode: show compose toggle */
+    /* Show compose in HUD on mobile */
     .hud-compose-btn { display: flex; }
-    /* Compose mode: swap compose toggle for submit */
-    body.compose-mode .hud-submit-btn { display: flex; }
+    /* Show exit button in compose mode on mobile */
+    body.compose-mode .hud-compose-exit { display: flex; }
+    /* Hide compose toggle button when in compose (exit replaces it) */
     body.compose-mode .hud-compose-btn { display: none; }
-    /* Hide standalone compose toggle */
+    /* Hide standalone compose toggle on mobile */
     .compose-toggle { display: none; }
 }
 
+
+.compose-upload-placeholder {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.02);
+    border: 1px dashed rgba(255,255,255,0.12);
+    color: var(--ink-3);
+    cursor: not-allowed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    gap: 2px;
+    opacity: 0.45;
+    transition: opacity 0.15s ease;
+    position: relative;
+}
+.compose-upload-placeholder:hover { opacity: 0.6; }
+.compose-upload-placeholder svg { width: 15px; height: 15px; }
+.compose-upload-label {
+    font-family: var(--ui-font);
+    font-size: 7px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    line-height: 1;
+}
+
+
+.compose-bracket-btn {
+    font-family: var(--ui-font);
+    font-size: 10px;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--ink-3);
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+}
+.compose-bracket-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--hover-tint);
+}
+
+/* Mobile-only close button inside compose bar */
+.compose-close-mobile {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--ink-3);
+    font-family: var(--ui-font);
+    font-size: 11px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    line-height: 1;
+}
+.compose-close-mobile:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+@media (max-width: 768px) {
+    .compose-close-mobile { display: block; }
+}
 
 /* Writer stats morph */
 body.compose-mode #statSentencesSeen::after { content: ''; }
@@ -1902,6 +1941,7 @@ body.compose-mode .stat-label-writer { display: block; }
 body.compose-mode { padding-bottom: 0; }
 
 @media (max-width: 768px) {
+    .compose-bar { padding: 12px 16px 16px; }
     .compose-input { font-size: 16px; }
     .imagemap-picker { padding: 60px 16px 24px; }
     .imagemap-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
@@ -1978,13 +2018,13 @@ body.compose-mode { padding-bottom: 0; }
 
     <div id="statsWidget" class="stats-widget" title="Drag to move" aria-label="Reading stats and navigation">
         <div class="stats-drag-handle">⋮⋮</div>
-        <!-- Compose button — mobile HUD only (reader mode) -->
+        <!-- Compose button — mobile HUD only -->
         <button class="hud-nav-btn hud-compose-btn" id="hudComposeBtn" aria-label="Toggle compose mode" title="Compose">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
         </button>
-        <!-- Submit button — compose mode on mobile only -->
-        <button class="hud-nav-btn hud-submit-btn" id="hudSubmitBtn" aria-label="Commit sentence" title="Commit sentence">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        <!-- Compose exit button — mobile only, visible only in compose mode -->
+        <button class="hud-nav-btn hud-compose-exit" id="hudComposeExit" aria-label="Exit compose mode" title="Exit Compose">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
         <div class="hud-divider"></div>
         <div class="stats-group">
@@ -2058,38 +2098,44 @@ body.compose-mode { padding-bottom: 0; }
     <div class="compose-bar" id="composeBar" aria-label="Compose">
         <div class="compose-drag-handle" id="composeDragHandle">⋮⋮</div>
         <div class="compose-bar-inner">
-            <div class="compose-header">
-                <span class="compose-label">Compose</span>
-                <div class="compose-header-controls">
-                    <select class="compose-chapter-select" id="composeChapterSelect" aria-label="Select chapter"></select>
-                    <!-- Desktop: word count inline -->
-                    <span class="compose-hint compose-wordcount-desktop" id="composeWordCount">0 words · 0 sentences</span>
-                    <!-- Mobile: tooltip/hints icon triggers toast -->
-                    <button class="compose-hints-btn" id="composeHintsBtn" aria-label="Show keyboard hints" title="Keyboard hints">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                    </button>
-                    <!-- Close — always visible -->
-                    <button class="compose-close-btn" id="composeMobileClose" aria-label="Exit compose mode" title="Exit Compose">✕</button>
-                </div>
+        <div class="compose-header">
+            <span class="compose-label">Compose</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <select class="compose-chapter-select" id="composeChapterSelect" aria-label="Select chapter">
+                </select>
+                <button class="compose-bracket-btn" id="composeBracketBtn" title="Insert bracket annotation">[+] Annotate</button>
+                <!-- Mobile-only close button — desktop uses Escape or the pencil toggle -->
+                <button class="compose-close-mobile" id="composeMobileClose" aria-label="Exit compose mode" title="Exit Compose">✕</button>
             </div>
+        </div>
+        <div class="compose-input-row">
             <textarea
                 class="compose-input"
                 id="composeInput"
-                placeholder="Write a sentence…"
+                placeholder="Write a sentence. Press Enter or ↵ to commit it to the piece."
                 rows="2"
                 aria-label="Compose sentence"
                 spellcheck="true"
             ></textarea>
-            <!-- Desktop hint row — hidden on mobile -->
-            <div class="compose-hints compose-hints-desktop">
-                <span class="compose-hint"><kbd>Enter</kbd> commit</span>
-                <div class="compose-hint-divider"></div>
-                <span class="compose-hint"><kbd>Shift+Enter</kbd> line break</span>
-                <div class="compose-hint-divider"></div>
-                <span class="compose-hint"><kbd>###</kbd> subchapter</span>
-                <div class="compose-hint-divider"></div>
-                <span class="compose-hint"><kbd>↑↓</kbd> navigate</span>
-            </div>
+            <button class="compose-upload-placeholder" id="composeUpload" aria-label="Image upload — coming soon" title="Image upload — coming soon" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                <span class="compose-upload-label">Soon</span>
+            </button>
+            <button class="compose-commit" id="composeCommit" aria-label="Commit sentence" disabled>
+                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </button>
+        </div>
+        <div class="compose-hints">
+            <span class="compose-hint"><kbd>Enter</kbd> commit sentence</span>
+            <div class="compose-hint-divider"></div>
+            <span class="compose-hint"><kbd>Shift+Enter</kbd> line break</span>
+            <div class="compose-hint-divider"></div>
+            <span class="compose-hint"><kbd>###</kbd> subchapter</span>
+            <div class="compose-hint-divider"></div>
+            <span class="compose-hint"><kbd>↑↓</kbd> navigate piece</span>
+            <div class="compose-hint-divider"></div>
+            <span class="compose-hint" id="composeWordCount">0 words · 0 sentences</span>
+        </div>
         </div><!-- /.compose-bar-inner -->
     </div>
 
@@ -2110,7 +2156,7 @@ body.compose-mode { padding-bottom: 0; }
     <header class="header">
         <div class="brand-container">
             <div class="brand" id="brandLogo" aria-label="Open chapter menu">
-                <span>frankly</span>
+                <span>Bathos</span>
                 <span class="brand-dropdown-icon">▼</span>
             </div>
             <div class="chapter-dropdown" id="chapterDropdown" aria-hidden="true">
@@ -2120,7 +2166,7 @@ body.compose-mode { padding-bottom: 0; }
                 </div>
                 <ul class="chapter-dropdown-list" id="chapterDropdownList"></ul>
                 <div class="chapter-dropdown-footer">
-                    <span class="dropdown-copyright">&copy; 2026 ifimaybefrank.com</span>
+                    <span class="dropdown-copyright">&copy; 2026 Bathos&trade;</span>
                     <a class="dropdown-readme" href="https://ifimaybefrank.com/read" target="_blank" rel="noopener">Read me</a>
                 </div>
             </div>
@@ -2210,7 +2256,6 @@ body.compose-mode { padding-bottom: 0; }
             </div>
         </div>
     </main>
-
     <script>
 // ===================================
 // IFIMAYBEFRANK - Complete JavaScript
@@ -2762,7 +2807,7 @@ const toastBehaviors = (() => {
             id: 'amb-chapters',
             icon: '📖',
             message: () => isMobile()
-                ? 'Tap <span class="toast-accent">frank</span> to jump between chapters.'
+                ? 'Tap <span class="toast-accent">Bathos</span> to jump between chapters.'
                 : 'Click the logo to open the <span class="toast-accent">chapter menu</span> — or use ← →.',
             actionLabel: 'Chapters',
             actionFn: () => toggleChapterDropdown()
@@ -4381,12 +4426,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const toggle     = document.getElementById('composeToggle');
         const bar        = document.getElementById('composeBar');
         const input      = document.getElementById('composeInput');
-        const commit     = document.getElementById('composeCommit'); // desktop only (not in DOM, kept for compat)
+        const commit     = document.getElementById('composeCommit');
         const chapterSel = document.getElementById('composeChapterSelect');
         const wordCount  = document.getElementById('composeWordCount');
-        const hudSubmit  = document.getElementById('hudSubmitBtn');   // mobile HUD submit
-        const mobileClose = document.getElementById('composeMobileClose');
-        const hintsBtn   = document.getElementById('composeHintsBtn');
+        const bracketBtn = document.getElementById('composeBracketBtn');
         const picker     = document.getElementById('imagemapPicker');
         const pickerClose= document.getElementById('imagemapPickerClose');
         const pickerPhrase = document.getElementById('imagemapPickerPhrase');
@@ -4424,7 +4467,14 @@ document.addEventListener('DOMContentLoaded', () => {
             populateChapterSelect();
             updateWordCount();
             syncWriterStats();
-            setTimeout(() => { input.focus(); }, 350);
+            setTimeout(() => {
+                input.focus();
+                // On mobile, push HUD above the compose bar
+                if (window.innerWidth <= 768) {
+                    const barH = bar.getBoundingClientRect().height;
+                    statsWidget.style.bottom = `calc(${barH}px + 12px + env(safe-area-inset-bottom))`;
+                }
+            }, 350);
             syncComposeCluster();
         }
 
@@ -4436,6 +4486,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const hudCompose = document.getElementById('hudComposeBtn');
             if (hudCompose) hudCompose.classList.remove('active');
             Utils.$$('.sentence.editing').forEach(s => s.classList.remove('editing'));
+            // Restore HUD position on mobile
+            if (window.innerWidth <= 768) {
+                statsWidget.style.bottom = 'calc(16px + env(safe-area-inset-bottom))';
+            }
             syncComposeCluster();
         }
 
@@ -4445,38 +4499,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         toggle.addEventListener('click', toggleCompose);
 
-        // HUD compose button (mobile — reader mode)
+        // HUD compose button (mobile)
         const hudCompose = document.getElementById('hudComposeBtn');
         if (hudCompose) hudCompose.addEventListener('click', toggleCompose);
 
-        // HUD submit button (mobile — compose mode)
-        if (hudSubmit) {
-            hudSubmit.disabled = true;
-            hudSubmit.addEventListener('click', commitSentence);
-        }
-
-        // Close button inside compose bar
+        // Mobile close button inside compose bar
+        const mobileClose = document.getElementById('composeMobileClose');
         if (mobileClose) mobileClose.addEventListener('click', exitCompose);
-
-        // Hints tooltip button → fires a toast on mobile
-        if (hintsBtn) {
-            hintsBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                Toast.show({
-                    id: `compose-hints-${Date.now()}`,
-                    icon: '⌨️',
-                    message: '<span class="toast-accent">Enter</span> commit &nbsp;·&nbsp; <span class="toast-accent">Shift+Enter</span> line break &nbsp;·&nbsp; <span class="toast-accent">###</span> subchapter &nbsp;·&nbsp; <span class="toast-accent">dbl-tap</span> sentence to edit',
-                    duration: 10000,
-                    force: true
-                });
-            });
-        }
 
         // ── Input state ──
         input.addEventListener('input', () => {
-            const hasContent = input.value.trim().length > 0;
-            if (hudSubmit) hudSubmit.disabled = !hasContent;
+            const val = input.value.trim();
+            commit.disabled = val.length === 0;
             updateWordCount();
+            // Keep HUD above compose bar as it grows
+            if (window.innerWidth <= 768 && compose.active) {
+                const barH = bar.getBoundingClientRect().height;
+                statsWidget.style.bottom = `calc(${barH}px + 12px + env(safe-area-inset-bottom))`;
+            }
             // Auto-resize
             input.style.height = 'auto';
             input.style.height = Math.min(input.scrollHeight, 180) + 'px';
@@ -4500,8 +4540,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // ── Commit sentence ──
         function commitSentence() {
-            const raw = input.value.trim();
+            let raw = input.value.trim();
             if (!raw) return;
+
+            // Auto-punctuate: add period if sentence doesn't end with punctuation
+            // (skip for special syntax: subchapter, line break)
+            if (!raw.startsWith('### ') && raw !== '//' && raw !== '/') {
+                if (!/[.!?…]$/.test(raw)) raw += '.';
+            }
 
             const stream = Utils.$('#stream');
             if (!stream) return;
@@ -4517,7 +4563,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 compose.editingIndex = -1;
                 input.value = '';
                 input.style.height = 'auto';
-                if (hudSubmit) hudSubmit.disabled = true;
+                commit.disabled = true;
                 updateWordCount();
                 return;
             }
@@ -4532,7 +4578,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 stream.appendChild(el);
                 input.value = '';
                 input.style.height = 'auto';
-                if (hudSubmit) hudSubmit.disabled = true;
+                commit.disabled = true;
                 updateWordCount();
                 return;
             }
@@ -4545,7 +4591,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 stream.appendChild(br);
                 input.value = '';
                 input.style.height = 'auto';
-                if (hudSubmit) hudSubmit.disabled = true;
+                commit.disabled = true;
                 updateWordCount();
                 return;
             }
@@ -4624,7 +4670,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             input.value = '';
             input.style.height = 'auto';
-            if (hudSubmit) hudSubmit.disabled = true;
+            commit.disabled = true;
             updateWordCount();
 
             // Scroll new sentence into view
@@ -4647,7 +4693,7 @@ document.addEventListener('DOMContentLoaded', () => {
             input.value = plain;
             input.style.height = 'auto';
             input.style.height = Math.min(input.scrollHeight, 180) + 'px';
-            if (hudSubmit) hudSubmit.disabled = false;
+            commit.disabled = false;
             input.focus();
             input.select();
             highlightSentence(index);
@@ -4687,19 +4733,23 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'ArrowDown' && e.metaKey) { e.preventDefault(); nextSentence(); }
         });
 
-        // ── Bracket annotation quick-insert (cluster key only on mobile) ──
+        commit.addEventListener('click', commitSentence);
+
+        // ── Bracket annotation quick-insert ──
         function insertBracket() {
             const pos = input.selectionStart;
             const val = input.value;
             const bracketed = val.slice(0, pos) + ' [annotation text] ' + val.slice(pos);
             input.value = bracketed;
+            // Select "annotation text" for immediate replacement
             const start = pos + 2;
             const end = start + 15;
             input.focus();
             input.setSelectionRange(start, end);
-            if (hudSubmit) hudSubmit.disabled = false;
+            commit.disabled = false;
         }
 
+        bracketBtn.addEventListener('click', insertBracket);
         if (clusterBracket) clusterBracket.addEventListener('click', (e) => { e.stopPropagation(); insertBracket(); input.focus(); });
 
         // ── Subchapter quick-insert ──
@@ -4707,14 +4757,14 @@ document.addEventListener('DOMContentLoaded', () => {
             e.stopPropagation();
             input.value = '### ';
             input.focus();
-            if (hudSubmit) hudSubmit.disabled = false;
+            commit.disabled = false;
         });
 
         // ── Line break quick-insert ──
         if (clusterBreak) clusterBreak.addEventListener('click', (e) => {
             e.stopPropagation();
             input.value = '//';
-            if (hudSubmit) hudSubmit.disabled = false;
+            commit.disabled = false;
             commitSentence();
         });
 
