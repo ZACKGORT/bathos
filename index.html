@@ -18,7 +18,7 @@
     <meta property="twitter:description" content="Seven people. Seven reasons. One format.">
     <meta property="twitter:image" content="https://ifimaybefrank.com/og-image.jpg">
     
-    <title>If I May Be Frank — Zack Gort</title>
+    <title>Bathos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -2085,7 +2085,7 @@ body.compose-mode { padding-bottom: 0; }
                 <div class="compose-hint-divider"></div>
                 <span class="compose-hint"><kbd>Shift+Enter</kbd> line break</span>
                 <div class="compose-hint-divider"></div>
-                <span class="compose-hint"><kbd>###</kbd> subchapter</span>
+                <span class="compose-hint"><kbd>###</kbd> chapter</span>
                 <div class="compose-hint-divider"></div>
                 <span class="compose-hint"><kbd>↑↓</kbd> navigate</span>
             </div>
@@ -2163,7 +2163,7 @@ body.compose-mode { padding-bottom: 0; }
             </button>
             <button class="mode-key compose-key" id="composeKeySubchapter" aria-label="Insert subchapter break" title="Insert subchapter ###">
                 <span class="mode-key-label">###</span>
-                <span class="mode-key-desc">Section</span>
+                <span class="mode-key-desc">Chapter</span>
             </button>
             <button class="mode-key compose-key" id="composeKeyBreak" aria-label="Insert line break //" title="Insert line break //">
                 <span class="mode-key-label">//</span>
@@ -2211,7 +2211,7 @@ body.compose-mode { padding-bottom: 0; }
     </main>
     <script>
 // ===================================
-// IFIMAYBEFRANK - Complete JavaScript
+// BATHOS - Complete JavaScript
 // ===================================
 
 const CONFIG = {
@@ -2261,26 +2261,26 @@ const state = {
 const cursor = { x: 0, y: 0, targetX: 0, targetY: 0, element: null, currentImageElement: null };
 const parallax = { text: { x: 0, y: 0, targetX: 0, targetY: 0 }, image: { x: 0, y: 0, targetX: 0, targetY: 0 } };
 
+
+
+
 // ===================================
 // DATA
 // ===================================
 const chapters = [
     { id: 0, title: "Arrival", startText: "That feeling of arrival" },
-    { id: 1, title: "The Pause", startText: "Most tools don’t honor that moment" },
+    { id: 1, title: "The Pause", startText: "Most tools don't honor that moment" },
     { id: 2, title: "The Format", startText: "This format was built inside that pause" },
     { id: 3, title: "That Rhythm", startText: "That rhythm has a name" },
-    { id: 4, title: "Begin", startText: "You’re here now" }
+    { id: 4, title: "Begin", startText: "You're here now" }
 ]
 
 const imageMap = {
-    // ── Before We Begin ──
     'every story': 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1200&q=80',
     'weight it deserves': 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&q=80',
     'sentence by sentence': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1200&q=80',
     'image and the word': 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=1200&q=80',
     'architecture of attention': 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&q=80',
-
-    // ── The Student ──
     'first draft': 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&q=80',
     'college application': 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&q=80',
     'post it or publish it': 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1200&q=80',
@@ -2290,8 +2290,6 @@ const imageMap = {
     'something real to say': 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=1200&q=80',
     'format demands it': 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1200&q=80',
     'one line at a time': 'https://images.unsplash.com/photo-1502003148287-a82ef80a6abc?w=1200&q=80',
-
-    // ── The Professional Academic ──
     'forty-one papers': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&q=80',
     'twelve people read': 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1200&q=80',
     'dense thinking walkable': 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1200&q=80',
@@ -2300,8 +2298,6 @@ const imageMap = {
     'felt context': 'https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?w=1200&q=80',
     'academic prose': 'https://images.unsplash.com/photo-1415226597516-61cf94eb6c7a?w=1200&q=80',
     'readable without being diminished': 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=1200&q=80',
-
-    // ── The Music Teacher ──
     'PDF handout': 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=1200&q=80',
     'Goldberg Variations': 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=1200&q=80',
     'concert hall': 'https://images.unsplash.com/photo-1540908489236-15aac66d9a53?w=1200&q=80',
@@ -2309,8 +2305,6 @@ const imageMap = {
     'inside the music': 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=1200&q=80',
     'piano keys': 'https://images.unsplash.com/photo-1552422535-c45813c61732?w=1200&q=80',
     'different kind of preparation': 'https://images.unsplash.com/photo-1444628838545-ac4016a5418a?w=1200&q=80',
-
-    // ── The Small Agency ──
     'case study': 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200&q=80',
     'sketch on a napkin': 'https://images.unsplash.com/photo-1568209865332-a15790aed756?w=1200&q=80',
     'client call': 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=1200&q=80',
@@ -2318,16 +2312,12 @@ const imageMap = {
     'felt the process': 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=80',
     'trust is different': 'https://images.unsplash.com/photo-1444210971048-6130cf0c46cf?w=1200&q=80',
     'pitch than a PDF': 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&q=80',
-
-    // ── The Large Agency ──
     'award submissions': 'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=1200&q=80',
     'credentials pages': 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80',
     'capabilities deck': 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1200&q=80',
     'one thing, deeply': 'https://images.unsplash.com/photo-1455849318743-b2233052fcff?w=1200&q=80',
     'specific room': 'https://images.unsplash.com/photo-1577412647305-991150c7d163?w=1200&q=80',
     'thought carefully': 'https://images.unsplash.com/photo-1488229297570-58520851e868?w=1200&q=80',
-
-    // ── The Individual ──
     'not a writer': 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1200&q=80',
     'photo dump': 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6?w=1200&q=80',
     'lost someone': 'https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=1200&q=80',
@@ -2335,8 +2325,6 @@ const imageMap = {
     'kids to read': 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=1200&q=80',
     'image carries': 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&q=80',
     'actual experience': 'https://images.unsplash.com/photo-1504805572947-34fad45aed93?w=1200&q=80',
-
-    // ── The Creator ──
     'two in the morning': 'https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=1200&q=80',
     'architectural constraint': 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80',
     'sentence-by-sentence reveal': 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1200&q=80',
@@ -2345,8 +2333,6 @@ const imageMap = {
     'hide UI mode': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80',
     'readership': 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1200&q=80',
     'proof of concept': 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200&q=80',
-
-    // ── Blank state / onboarding ──
     'carry an image': 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&q=80',
     'leaving for the last time': 'https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=1200&q=80',
     'find its shape': 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&q=80',
@@ -2358,6 +2344,7 @@ const imageMap = {
     'cursor blinking': 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=1200&q=80',
     'write one sentence': 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=1200&q=80'
 }
+
 const phraseRegexMap = new Map();
 Object.keys(imageMap).forEach(phrase => {
     const escapedPhrase = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -2374,10 +2361,10 @@ You know it as a writer too — maybe better.
 
 The period is the decision. [Not the word. Not the sentence. The full stop. The moment you commit to what you just said.]//
 
-### Most tools don’t honor that moment.
-They give you a cursor blinking past it. A word count that doesn’t care where you stopped. A paragraph that swallows the period whole and keeps going.
+### Most tools don't honor that moment.
+They give you a cursor blinking past it. A word count that doesn't care where you stopped. A paragraph that swallows the period whole and keeps going.
 
-They were built for output. Writing isn’t output.
+They were built for output. Writing isn't output.
 
 Writing is the pause after the period. The reread. The small surgery. The moment you realize the true sentence was the one before the one you just wrote.//
 
@@ -2393,14 +2380,12 @@ The drop from the elevated to the plain. The sentence after the profound one. Th
 
 Bathos. [Lowercase. It belongs to every writer who has ever stopped after a period and started again.]//
 
-### You’re here now.
+### You're here now.
 Write one sentence.
 
 End it with a period.
 
 The format will do the rest.`
-
-
 
 // ===================================
 // UTILITY FUNCTIONS
@@ -4386,17 +4371,31 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // ── Insert new sentence ──
-            // Check for subchapter prefix
+            // Check for chapter/subchapter prefix
             if (raw.startsWith('### ')) {
                 const title = raw.substring(4).trim();
-                const el = document.createElement('div');
-                el.className = 'subchapter-break';
-                el.innerHTML = `<span class="subchapter-title">${title}</span>`;
-                stream.appendChild(el);
+
+                // Create a new chapter entry
+                const newChapterId = chapters.length;
+                chapters.push({ id: newChapterId, title: title, startText: null });
+                state.chapterStartIndices.push(state.allSentenceElements.length);
+
+                // Build a proper chapter-break element (matches render() output)
+                const chapterBreak = document.createElement('div');
+                chapterBreak.className = 'chapter-break';
+                chapterBreak.dataset.chapterId = newChapterId;
+                chapterBreak.innerHTML = `<span class="chapter-number">Chapter ${String(newChapterId + 1).padStart(2, '0')}</span><span class="chapter-title">${title}</span>`;
+                chapterBreak.addEventListener('click', () => { showUI(); openDropdownFromChapterBreak(chapterBreak, newChapterId); });
+                stream.appendChild(chapterBreak);
+
+                buildChapterDropdown();
+                updateChapterProgress();
                 input.value = '';
                 input.style.height = 'auto';
                 if (hudSubmit) hudSubmit.disabled = true;
                 updateWordCount();
+
+                Toast.show({ id: `chapter-added-${Date.now()}`, icon: '📖', message: `Chapter ${newChapterId + 1}: <span class="toast-accent">${title}</span> added`, duration: 3000, force: true });
                 return;
             }
 
