@@ -2268,6 +2268,7 @@ const state = {
 
 const cursor = { x: 0, y: 0, targetX: 0, targetY: 0, element: null, currentImageElement: null };
 const parallax = { text: { x: 0, y: 0, targetX: 0, targetY: 0 }, image: { x: 0, y: 0, targetX: 0, targetY: 0 } };
+let composeActive = false; // module-level flag so highlightSentence can read it
 
 
 
@@ -3263,6 +3264,18 @@ function previousSentence() {
 function highlightSentence(index) {
     const sentence = state.allSentenceElements[index];
     if (!sentence) return;
+
+    // Auto-advance past structural elements (chapter/section breaks) during reader navigation
+    if (sentence.dataset.structural && !composeActive) {
+        const dir = index >= state.currentSentenceIndex ? 1 : -1;
+        const next = index + dir;
+        if (next >= 0 && next < state.allSentenceElements.length) {
+            state.currentSentenceIndex = next;
+            highlightSentence(next);
+            return;
+        }
+    }
+
     state.allSentenceElements.forEach(s => {
         s.classList.remove('active');
         s.classList.add('dimmed');
@@ -3284,13 +3297,13 @@ function highlightSentence(index) {
     // Move focus to sentence if navigating via keyboard (not mouse)
     if (state.lastNavWasKeyboard) sentence.focus({ preventScroll: true });
 
-    // Track stats
-    trackSentence(index);
+    // Track stats — skip structural elements
+    if (!sentence.dataset.structural) {
+        trackSentence(index);
+        toastBehaviors.onSentenceAdvance();
+        if (index === state.allSentenceElements.length - 1) toastBehaviors.onLastSentence();
+    }
     trackChapter(getCurrentChapter());
-    toastBehaviors.onSentenceAdvance();
-
-    // End-of-content CTA on last sentence
-    if (index === state.allSentenceElements.length - 1) toastBehaviors.onLastSentence();
 
     updateChapterProgress();
     updateChapterDropdown();
@@ -3606,9 +3619,16 @@ function render() {
                     const chapterBreak = document.createElement('div');
                     chapterBreak.className = 'chapter-break';
                     chapterBreak.dataset.chapterId = nextChapter.id;
+                    chapterBreak.dataset.type = 'chapter';
+                    chapterBreak.dataset.structural = 'true';
+                    chapterBreak.dataset.sentenceIndex = sentenceCount;
+                    chapterBreak.dataset.title = nextChapter.title;
                     chapterBreak.innerHTML = `<span class="chapter-number">Chapter ${String(nextChapter.id + 1).padStart(2, '0')}</span><span class="chapter-title">${nextChapter.title}</span>`;
                     chapterBreak.addEventListener('click', () => { showUI(); openDropdownFromChapterBreak(chapterBreak, nextChapter.id); });
+                    chapterBreak.addEventListener('dblclick', () => { if (!composeActive) return; beginEdit(parseInt(chapterBreak.dataset.sentenceIndex)); });
                     fragment.appendChild(chapterBreak);
+                    state.allSentenceElements.push(chapterBreak);
+                    sentenceCount++;
                     currentActiveChapter = nextChapter.id;
                     nextChapterIndex++;
                 }
@@ -3623,9 +3643,19 @@ function render() {
             const chapterBreak = document.createElement('div');
             chapterBreak.className = 'chapter-break';
             chapterBreak.dataset.chapterId = newChapterId;
+            chapterBreak.dataset.type = 'chapter';
+            chapterBreak.dataset.structural = 'true';
+            chapterBreak.dataset.sentenceIndex = sentenceCount;
+            chapterBreak.dataset.title = part.title;
             chapterBreak.innerHTML = `<span class="chapter-number">Chapter ${String(newChapterId + 1).padStart(2, '0')}</span><span class="chapter-title">${part.title}</span>`;
             chapterBreak.addEventListener('click', () => { showUI(); openDropdownFromChapterBreak(chapterBreak, newChapterId); });
+            chapterBreak.addEventListener('dblclick', () => {
+                if (!composeActive) return;
+                beginEdit(parseInt(chapterBreak.dataset.sentenceIndex));
+            });
             fragment.appendChild(chapterBreak);
+            state.allSentenceElements.push(chapterBreak);
+            sentenceCount++;
             currentActiveChapter = newChapterId;
             return;
         }
@@ -3659,8 +3689,18 @@ function render() {
         } else if (part.type === 'subchapter-break') {
             const el = document.createElement('div');
             el.className = 'subchapter-break';
+            el.dataset.type = 'section';
+            el.dataset.structural = 'true';
+            el.dataset.sentenceIndex = sentenceCount;
+            el.dataset.title = part.title;
             el.innerHTML = `<span class="subchapter-title">${part.title}</span>`;
+            el.addEventListener('dblclick', () => {
+                if (!composeActive) return;
+                beginEdit(parseInt(el.dataset.sentenceIndex));
+            });
             state.subchapterStartIndices.push({ sentenceIndex: sentenceCount, title: part.title });
+            state.allSentenceElements.push(el);
+            sentenceCount++;
             fragment.appendChild(el);
         } else if (part.type === 'bullet') {
             const li = document.createElement('div');
@@ -4297,6 +4337,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function enterCompose() {
             compose.active = true;
+            composeActive = true;
             document.body.classList.add('compose-mode');
             toggle.classList.add('active');
             const hudCompose = document.getElementById('hudComposeBtn');
@@ -4313,6 +4354,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function exitCompose() {
             compose.active = false;
+            composeActive = false;
             compose.editingIndex = -1;
             document.body.classList.remove('compose-mode');
             toggle.classList.remove('active');
@@ -4375,15 +4417,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function updateWordCount() {
             const words = input.value.trim().split(/\s+/).filter(Boolean).length;
-            const sentences = state.allSentenceElements.length;
+            const sentences = state.allSentenceElements.filter(s => !s.dataset.structural).length;
             if (wordCount) wordCount.textContent = `${words} word${words !== 1 ? 's' : ''} · ${sentences} sentence${sentences !== 1 ? 's' : ''}`;
         }
 
         function syncWriterStats() {
-            // Sentences written = total in stream
+            const sentences = state.allSentenceElements.filter(s => !s.dataset.structural).length;
             const sentVal = document.getElementById('statSentencesSeen');
             if (sentVal) {
-                sentVal.textContent = state.allSentenceElements.length;
+                sentVal.textContent = sentences;
                 sentVal.classList.add('pulse');
                 setTimeout(() => sentVal.classList.remove('pulse'), 400);
             }
@@ -4401,9 +4443,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 // ── Edit existing sentence ──
                 const el = state.allSentenceElements[compose.editingIndex];
                 if (el) {
-                    el.innerHTML = wrapImageTriggers(raw) + ' ';
-                    el.classList.remove('editing');
-                    highlightSentence(compose.editingIndex);
+                    const elType = el.dataset.type;
+                    if (elType === 'chapter' || elType === 'section') {
+                        // Re-parse the edited value as the appropriate structural type
+                        const prefix = elType === 'chapter' ? '###:' : '##:';
+                        const editRaw = raw.startsWith(prefix) ? raw : prefix + raw;
+                        const title = editRaw.substring(prefix.length).trim().replace(/\.$/, '') + '.';
+                        const displayTitle = title.replace(/\.$/, '');
+                        el.dataset.title = displayTitle;
+                        el.classList.remove('editing');
+
+                        if (elType === 'chapter') {
+                            const chId = parseInt(el.dataset.chapterId);
+                            if (chapters[chId]) chapters[chId].title = displayTitle;
+                            el.innerHTML = `<span class="chapter-number">Chapter ${String(chId + 1).padStart(2, '0')}</span><span class="chapter-title">${displayTitle}</span>`;
+                            buildChapterDropdown();
+                        } else {
+                            el.innerHTML = `<span class="subchapter-title">${displayTitle}</span>`;
+                            const sub = state.subchapterStartIndices.find(s => s.sentenceIndex === parseInt(el.dataset.sentenceIndex));
+                            if (sub) sub.title = displayTitle;
+                        }
+                        highlightSentence(compose.editingIndex);
+                    } else {
+                        el.innerHTML = wrapImageTriggers(raw) + ' ';
+                        el.classList.remove('editing');
+                        highlightSentence(compose.editingIndex);
+                    }
                 }
                 compose.editingIndex = -1;
                 input.value = '';
@@ -4416,34 +4481,51 @@ document.addEventListener('DOMContentLoaded', () => {
             // ── Insert new sentence ──
             // ###: Chapter break
             if (raw.startsWith('###:')) {
-                const title = raw.substring(4).trim();
+                const rawTitle = raw.substring(4).trim();
+                const title = rawTitle.replace(/\.$/, '') + '.'; // auto-period
+                const displayTitle = title.replace(/\.$/, '');
                 const newChapterId = chapters.length;
-                chapters.push({ id: newChapterId, title: title, startText: null });
-                state.chapterStartIndices.push(state.allSentenceElements.length);
+                chapters.push({ id: newChapterId, title: displayTitle, startText: null });
+                const idx = state.allSentenceElements.length;
+                state.chapterStartIndices.push(idx);
                 const chapterBreak = document.createElement('div');
                 chapterBreak.className = 'chapter-break';
                 chapterBreak.dataset.chapterId = newChapterId;
-                chapterBreak.innerHTML = `<span class="chapter-number">Chapter ${String(newChapterId + 1).padStart(2, '0')}</span><span class="chapter-title">${title}</span>`;
+                chapterBreak.dataset.type = 'chapter';
+                chapterBreak.dataset.structural = 'true';
+                chapterBreak.dataset.sentenceIndex = idx;
+                chapterBreak.dataset.title = displayTitle;
+                chapterBreak.innerHTML = `<span class="chapter-number">Chapter ${String(newChapterId + 1).padStart(2, '0')}</span><span class="chapter-title">${displayTitle}</span>`;
                 chapterBreak.addEventListener('click', () => { showUI(); openDropdownFromChapterBreak(chapterBreak, newChapterId); });
+                chapterBreak.addEventListener('dblclick', () => { if (!composeActive) return; beginEdit(parseInt(chapterBreak.dataset.sentenceIndex)); });
                 stream.appendChild(chapterBreak);
+                state.allSentenceElements.push(chapterBreak);
                 buildChapterDropdown();
                 updateChapterProgress();
                 input.value = '';
                 input.style.height = 'auto';
                 if (hudSubmit) hudSubmit.disabled = true;
                 updateWordCount();
-                Toast.show({ id: `chapter-added-${Date.now()}`, icon: '📖', message: `Chapter ${newChapterId + 1}: <span class="toast-accent">${title}</span> added`, duration: 3000, force: true });
+                Toast.show({ id: `chapter-added-${Date.now()}`, icon: '📖', message: `Chapter ${newChapterId + 1}: <span class="toast-accent">${displayTitle}</span> added`, duration: 3000, force: true });
                 return;
             }
 
             // ##: Subchapter break
             if (raw.startsWith('##:')) {
-                const title = raw.substring(3).trim();
+                const rawTitle = raw.substring(3).trim();
+                const displayTitle = rawTitle.replace(/\.$/, '');
+                const idx = state.allSentenceElements.length;
                 const el = document.createElement('div');
                 el.className = 'subchapter-break';
-                el.innerHTML = `<span class="subchapter-title">${title}</span>`;
-                state.subchapterStartIndices.push({ sentenceIndex: state.allSentenceElements.length, title });
+                el.dataset.type = 'section';
+                el.dataset.structural = 'true';
+                el.dataset.sentenceIndex = idx;
+                el.dataset.title = displayTitle;
+                el.innerHTML = `<span class="subchapter-title">${displayTitle}</span>`;
+                el.addEventListener('dblclick', () => { if (!composeActive) return; beginEdit(parseInt(el.dataset.sentenceIndex)); });
+                state.subchapterStartIndices.push({ sentenceIndex: idx, title: displayTitle });
                 stream.appendChild(el);
+                state.allSentenceElements.push(el);
                 input.value = '';
                 input.style.height = 'auto';
                 if (hudSubmit) hudSubmit.disabled = true;
@@ -4559,13 +4641,23 @@ document.addEventListener('DOMContentLoaded', () => {
         function beginEdit(index) {
             const el = state.allSentenceElements[index];
             if (!el) return;
-            // Clear previous editing state
-            Utils.$$('.sentence.editing').forEach(s => s.classList.remove('editing'));
+            Utils.$$('.sentence.editing, .chapter-break.editing, .subchapter-break.editing').forEach(s => s.classList.remove('editing'));
             compose.editingIndex = index;
             el.classList.add('editing');
-            // Put sentence text (without image triggers) into input
-            const plain = el.textContent.replace(/\s+/g, ' ').trim();
-            input.value = plain;
+
+            // Pre-fill with the appropriate prefix for structural elements
+            let prefilled;
+            if (el.dataset.type === 'chapter') {
+                const title = (el.dataset.title || '').replace(/\.$/, '');
+                prefilled = `###:${title}`;
+            } else if (el.dataset.type === 'section') {
+                const title = (el.dataset.title || '').replace(/\.$/, '');
+                prefilled = `##:${title}`;
+            } else {
+                prefilled = el.textContent.replace(/\s+/g, ' ').trim();
+            }
+
+            input.value = prefilled;
             input.style.height = 'auto';
             input.style.height = Math.min(input.scrollHeight, 180) + 'px';
             if (hudSubmit) hudSubmit.disabled = false;
@@ -4580,14 +4672,53 @@ document.addEventListener('DOMContentLoaded', () => {
             if (idx < 0 || idx >= state.allSentenceElements.length) return;
             const el = state.allSentenceElements[idx];
             if (!el) return;
-            if (!confirm(`Delete sentence ${idx + 1}?`)) return;
+
+            const isChapter = el.dataset.type === 'chapter';
+            const isSection = el.dataset.type === 'section';
+            const label = isChapter ? `chapter "${el.dataset.title}"` : isSection ? `section "${el.dataset.title}"` : `sentence ${idx + 1}`;
+            if (!confirm(`Delete ${label}?`)) return;
+
             el.remove();
             state.allSentenceElements.splice(idx, 1);
-            // Re-index remaining sentences
+
+            // If it was a chapter, remove from chapters[] and rebuild chapterStartIndices
+            if (isChapter) {
+                const chId = parseInt(el.dataset.chapterId);
+                chapters.splice(chId, 1);
+                // Re-assign ids sequentially
+                chapters.forEach((ch, i) => { ch.id = i; });
+                // Rebuild chapterStartIndices from remaining chapter-break elements
+                state.chapterStartIndices = new Array(chapters.length).fill(-1);
+                state.allSentenceElements.forEach((s, i) => {
+                    if (s.dataset.type === 'chapter') {
+                        const cid = parseInt(s.dataset.chapterId);
+                        // Re-assign chapterId after splice
+                        const newCid = chapters.findIndex(c => c.title === s.dataset.title);
+                        if (newCid >= 0) {
+                            s.dataset.chapterId = newCid;
+                            state.chapterStartIndices[newCid] = i;
+                            s.querySelector('.chapter-number').textContent = `Chapter ${String(newCid + 1).padStart(2, '0')}`;
+                        }
+                    }
+                });
+                buildChapterDropdown();
+            }
+
+            // If it was a section, remove from subchapterStartIndices
+            if (isSection) {
+                const sIdx = parseInt(el.dataset.sentenceIndex);
+                const pos = state.subchapterStartIndices.findIndex(s => s.sentenceIndex === sIdx);
+                if (pos >= 0) state.subchapterStartIndices.splice(pos, 1);
+            }
+
+            // Re-index remaining elements
             state.allSentenceElements.forEach((s, i) => {
                 s.dataset.sentenceIndex = i;
-                s.setAttribute('aria-label', `Sentence ${i + 1}: ${s.textContent.trim()}`);
+                if (!s.dataset.structural) {
+                    s.setAttribute('aria-label', `Sentence ${i + 1}: ${s.textContent.trim()}`);
+                }
             });
+
             const newIdx = Math.min(idx, state.allSentenceElements.length - 1);
             state.currentSentenceIndex = newIdx;
             if (newIdx >= 0) highlightSentence(newIdx);
