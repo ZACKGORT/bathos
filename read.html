@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFIMAYBEFRANK — How It Works</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+
+/* ===================================
+   ROOT — mirrors ifimaybefrank.com
+   =================================== */
+:root {
+    --bg-color: #000000;
+    --ink: #ffffff;
+    --ink-2: #b8b8b8;
+    --ink-3: #808080;
+    --accent: #daa520;
+    --surface: rgba(255,255,255,0.04);
+    --surface-raised: rgba(10,10,10,0.95);
+    --border: rgba(255,255,255,0.10);
+    --border-strong: rgba(255,255,255,0.15);
+    --hover-tint: rgba(218,165,32,0.08);
+    --hover-tint-strong: rgba(218,165,32,0.15);
+    --bracket-color: #8b6f47;
+    --ui-font: 'Space Mono', monospace;
+    --body-font: 'Crimson Text', Georgia, serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    background: var(--bg-color);
+    color: var(--ink);
+    font-family: var(--body-font);
+    font-size: clamp(17px, 1.8vw, 21px);
+    line-height: 1.75;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Grain overlay — same as main site */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+    background-size: 120px 120px;
+}
+
+::selection {
+    background: rgba(218,165,32,0.25);
+    color: #fff;
+}
+
+/* ===================================
+   LAYOUT
+   =================================== */
+.page-wrap {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 0 clamp(24px, 6vw, 64px);
+}
+
+/* ===================================
+   HEADER
+   =================================== */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+}
+
+.site-header .page-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.header-brand {
+    font-family: var(--ui-font);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+.header-brand:hover { color: var(--accent); }
+.header-brand span { color: var(--accent); }
+
+.header-label {
+    font-family: var(--ui-font);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+    border-radius: 2px;
+}
+
+/* ===================================
+   HERO
+   =================================== */
+.hero {
+    padding: 80px 0 60px;
+    border-bottom: 1px solid var(--border);
+}
+
+.hero-eyebrow {
+    font-family: var(--ui-font);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 20px;
+    opacity: 0.8;
+}
+
+.hero h1 {
+    font-family: var(--body-font);
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--ink);
+    margin: 0 0 24px;
+    letter-spacing: -0.02em;
+}
+
+.hero h1 em {
+    font-style: italic;
+    color: var(--ink-2);
+}
+
+.hero-lead {
+    font-size: clamp(16px, 1.6vw, 19px);
+    color: var(--ink-2);
+    line-height: 1.7;
+    margin: 0;
+    max-width: 580px;
+}
+
+/* ===================================
+   TABLE OF CONTENTS
+   =================================== */
+.toc {
+    padding: 40px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.toc-label {
+    font-family: var(--ui-font);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 16px;
+}
+
+.toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 32px;
+}
+
+@media (max-width: 560px) { .toc-list { grid-template-columns: 1fr; } }
+
+.toc-list li { display: flex; align-items: baseline; gap: 8px; }
+
+.toc-list a {
+    font-family: var(--ui-font);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--ink-3);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.15s ease;
+    padding: 4px 0;
+}
+.toc-list a:hover { color: var(--accent); }
+
+.toc-num {
+    font-family: var(--ui-font);
+    font-size: 9px;
+    color: var(--border-strong);
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+}
+
+/* ===================================
+   CONTENT SECTIONS
+   =================================== */
+.section {
+    padding: 64px 0 48px;
+    border-bottom: 1px solid var(--border);
+}
+.section:last-of-type { border-bottom: none; }
+
+.section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.section-num {
+    font-family: var(--ui-font);
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
+    padding-top: 4px;
+}
+
+.section h2 {
+    font-family: var(--body-font);
+    font-size: clamp(22px, 2.8vw, 30px);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.section p {
+    color: var(--ink-2);
+    margin: 0 0 18px;
+    line-height: 1.75;
+}
+.section p:last-child { margin-bottom: 0; }
+
+.section p strong {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.section p em {
+    font-style: italic;
+    color: var(--ink-2);
+}
+
+/* ===================================
+   MECHANIC BLOCKS
+   =================================== */
+.mechanic-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin: 24px 0;
+}
+
+.mechanic-block + .mechanic-block { margin-top: 12px; }
+
+.mechanic-title {
+    font-family: var(--ui-font);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+    opacity: 0.9;
+}
+
+.mechanic-block p {
+    font-size: clamp(14px, 1.4vw, 16px);
+    margin: 0;
+    color: var(--ink-2);
+    line-height: 1.65;
+}
+
+.mechanic-block p + p { margin-top: 10px; }
+
+/* ===================================
+   KEY TABLES
+   =================================== */
+.key-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-family: var(--ui-font);
+    font-size: 11px;
+}
+
+.key-table th {
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-strong);
+    font-weight: 400;
+}
+
+.key-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+
+.key-table tr:last-child td { border-bottom: none; }
+
+.key-table td:first-child {
+    white-space: nowrap;
+}
+
+.key-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border-strong);
+    border-radius: 3px;
+    padding: 2px 7px;
+    font-size: 10px;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    margin-right: 4px;
+    line-height: 1.6;
+}
+
+.key-action {
+    color: var(--ink-2);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.key-note {
+    color: var(--ink-3);
+    font-size: 10px;
+    margin-top: 3px;
+    font-style: normal;
+    letter-spacing: 0.02em;
+}
+
+/* ===================================
+   MODE CARDS
+   =================================== */
+.mode-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 24px 0;
+}
+
+@media (max-width: 560px) { .mode-grid { grid-template-columns: 1fr; } }
+
+.mode-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+    transition: border-color 0.2s ease;
+}
+.mode-card:hover { border-color: rgba(218,165,32,0.3); }
+
+.mode-card-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-strong);
+    border-radius: 3px;
+    font-family: var(--ui-font);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+}
+
+.mode-card-name {
+    font-family: var(--ui-font);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 8px;
+}
+
+.mode-card p {
+    font-size: 13px;
+    color: var(--ink-3);
+    line-height: 1.55;
+    margin: 0;
+    font-family: var(--ui-font);
+}
+
+/* ===================================
+   INLINE CODE / SYNTAX
+   =================================== */
+code {
+    font-family: var(--ui-font);
+    font-size: 0.8em;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 1px 6px;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+}
+
+/* ===================================
+   DIVIDERS / ORNAMENTS
+   =================================== */
+.ornament {
+    display: block;
+    text-align: center;
+    font-family: var(--ui-font);
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.3em;
+    opacity: 0.35;
+    margin: 8px 0;
+    user-select: none;
+}
+
+/* ===================================
+   ACCENT CALLOUT
+   =================================== */
+.callout {
+    border-left: 2px solid var(--accent);
+    padding: 14px 20px;
+    margin: 24px 0;
+    background: rgba(218,165,32,0.04);
+    border-radius: 0 4px 4px 0;
+}
+
+.callout p {
+    margin: 0;
+    font-style: italic;
+    color: var(--ink-2);
+    font-size: clamp(15px, 1.5vw, 18px);
+    line-height: 1.65;
+}
+
+/* ===================================
+   FOOTER
+   =================================== */
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 0 60px;
+    margin-top: 0;
+}
+
+.site-footer .page-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.footer-brand {
+    font-family: var(--ui-font);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
+.footer-link {
+    font-family: var(--ui-font);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+.footer-link:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ===================================
+   SCROLL REVEAL — subtle
+   =================================== */
+@media (prefers-reduced-motion: no-preference) {
+    .section {
+        animation: fadeUp 0.5s ease both;
+    }
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="site-header">
+        <div class="page-wrap">
+            <a href="/" class="header-brand">IFIMAYBEFRANK<span> ·</span> Zack Gort</a>
+            <span class="header-label">Mechanics / README</span>
+        </div>
+    </header>
+
+    <div class="page-wrap">
+
+        <!-- HERO -->
+        <section class="hero">
+            <p class="hero-eyebrow">How it works</p>
+            <h1>Every mechanic of<br><em>ifimaybefrank.com</em></h1>
+            <p class="hero-lead">This document covers the full interaction model — navigation, modes, image layer, annotations, keyboard shortcuts, accessibility, and the philosophy behind the decisions. Consider it the operator's manual.</p>
+        </section>
+
+        <!-- TOC -->
+        <nav class="toc" aria-label="Table of contents">
+            <p class="toc-label">Contents</p>
+            <ul class="toc-list">
+                <li><span class="toc-num">01</span><a href="#navigation">Navigation</a></li>
+                <li><span class="toc-num">02</span><a href="#sentence-stream">Sentence Stream</a></li>
+                <li><span class="toc-num">03</span><a href="#image-layer">Image Layer</a></li>
+                <li><span class="toc-num">04</span><a href="#annotations">Bracket Annotations</a></li>
+                <li><span class="toc-num">05</span><a href="#modes">View Modes</a></li>
+                <li><span class="toc-num">06</span><a href="#chapters">Chapters</a></li>
+                <li><span class="toc-num">07</span><a href="#keyboard">Keyboard Shortcuts</a></li>
+                <li><span class="toc-num">08</span><a href="#chrome">Chrome &amp; Widgets</a></li>
+                <li><span class="toc-num">09</span><a href="#themes">Themes</a></li>
+                <li><span class="toc-num">10</span><a href="#mobile">Mobile</a></li>
+                <li><span class="toc-num">11</span><a href="#toasts">Toast System</a></li>
+                <li><span class="toc-num">12</span><a href="#accessibility">Accessibility</a></li>
+            </ul>
+        </nav>
+
+        <!-- 01 NAVIGATION -->
+        <section class="section" id="navigation">
+            <div class="section-header">
+                <span class="section-num">01</span>
+                <h2>Navigation</h2>
+            </div>
+
+            <p>The site replaces scrolling with deliberate, sentence-by-sentence advancement. There is no continuous scroll. Every move forward or backward is a discrete step.</p>
+
+            <p>Navigation is intentionally redundant — every input method a reader might reach for is supported simultaneously. You never have to learn a specific gesture to proceed.</p>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Desktop</p>
+                <p>Scroll wheel or trackpad advances one sentence per gesture. Arrow keys (↑↓), <code>j</code>/<code>k</code>, and <code>Space</code> also navigate. Arrow keys (←→) jump between chapters. Clicking any sentence in the stream jumps directly to that sentence.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Mobile</p>
+                <p>Swipe up/down advances or retreats one sentence. Tap anywhere on the stream activates the tapped sentence. The HUD widget (bottom-center, floating) provides prev/next buttons at all times — including in Read mode where the rest of the UI is hidden.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Chapter Jumps</p>
+                <p>Arrow left/right on desktop jumps to the previous or next chapter's first sentence. The chapter progress rail (right edge, desktop) shows dots for each chapter — click any dot to jump. The chapter dropdown (via the logo or <code>C</code> key) lists every chapter with a progress indicator.</p>
+            </div>
+
+            <p>A scroll cooldown prevents accidental double-advances on fast trackpad gestures. The threshold is tuned to distinguish intentional swipes from scroll momentum.</p>
+        </section>
+
+        <!-- 02 SENTENCE STREAM -->
+        <section class="section" id="sentence-stream">
+            <div class="section-header">
+                <span class="section-num">02</span>
+                <h2>Sentence Stream</h2>
+            </div>
+
+            <p>The narrative is parsed at runtime from a structured template literal into discrete units: sentences, subchapter breaks, chapter breaks, bullet items, numbered items, line breaks, and bracket annotations. Each unit becomes a DOM element with its own state.</p>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Active State</p>
+                <p>The current sentence is <strong>full opacity, full white</strong> with a subtle goldenrod glow. All other sentences dim to 50% opacity. This creates a spotlight effect — peripheral sentences remain legible but clearly subordinate to the one in focus.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Hover State (Desktop)</p>
+                <p>Hovering any non-active sentence raises it slightly — all other sentences dim further to 25% opacity. This allows the reader to preview a sentence without committing to it, and surface its associated image if it has one.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Subchapter Breaks</p>
+                <p>Editorial titles rendered at reduced opacity with a fine accent-colored top rule. They don't advance the sentence index — they're structural markers, not navigable elements. Their titles are editorially opinionated, often sardonic.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Chapter Breaks</p>
+                <p>Full-width separators with a chapter number and title. Clickable — they open the chapter dropdown directly. The chapter break for the next chapter appears inline in the stream at the exact sentence where that chapter begins.</p>
+            </div>
+
+            <div class="callout">
+                <p>The reading contract: you don't choose what to skip. You move through the piece at the pace the piece demands. The format is the argument.</p>
+            </div>
+        </section>
+
+        <!-- 03 IMAGE LAYER -->
+        <section class="section" id="image-layer">
+            <div class="section-header">
+                <span class="section-num">03</span>
+                <h2>Image Layer</h2>
+            </div>
+
+            <p>Images are not embedded in the text as blocks. They exist in a separate layer behind the text, surfaced associatively through phrase-to-image bindings called the <strong>imageMap</strong>.</p>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">imageMap</p>
+                <p>A key-value dictionary mapping specific phrases in the narrative to image URLs. When a sentence containing a mapped phrase is active, the associated image is automatically loaded and displayed as a full-viewport background behind the text. When the sentence changes, the image fades out.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Image Triggers</p>
+                <p>Phrases that appear in the imageMap are rendered as <strong>underlined trigger buttons</strong> within the sentence text. Hovering (desktop) or focusing (keyboard) a trigger surfaces its associated image independently of sentence activation — allowing a reader to linger on a specific visual reference. Triggers are styled inline so they don't break reading flow.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Parallax</p>
+                <p>The image layer and text layer move at different rates in response to mouse position. The text layer has a weaker parallax coefficient (<code>0.03</code>); the image layer is stronger (<code>0.15</code>). This creates a shallow depth-of-field effect — text floats in front of imagery. A center-magnet effect subtly pulls both layers toward a resting center when the mouse stops moving.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Image Grid</p>
+                <p>Pressing <code>G</code> or the <strong>SPC</strong> cluster key opens the Image Grid — a full-screen overlay displaying every image in the piece, organized by chapter. Each image shows its associated sentence text on hover. Clicking an image closes the grid and jumps directly to that sentence in the stream. This gives visual readers a non-linear entry point into the narrative.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Focus Mode — Cursor Thumbnail</p>
+                <p>In Focus Mode, the background image layer is suppressed entirely. Instead, hovering an image trigger expands the custom cursor into a 220×130px letterbox thumbnail that follows the pointer. The image is intimate — tied to the cursor rather than flooding the viewport. This is the highest-contrast reading state: text only, with images accessible on demand at the pointer tip.</p>
+            </div>
+        </section>
+
+        <!-- 04 BRACKET ANNOTATIONS -->
+        <section class="section" id="annotations">
+            <div class="section-header">
+                <span class="section-num">04</span>
+                <h2>Bracket Annotations</h2>
+            </div>
+
+            <p>Bracket annotations are inline footnotes — parenthetical asides, self-corrections, sardonic commentary, and contextual detail that would interrupt the main sentence if rendered inline. They appear throughout the narrative as <code>[+]</code> triggers.</p>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Interaction</p>
+                <p>Clicking or pressing Enter/Space on a <code>[+]</code> expands the annotation content inline, immediately following the trigger. The trigger changes to <code>[−]</code>. The content is rendered in a smaller, muted italic with a left accent rule — visually distinct from the main narrative but within the same flow. Click again to collapse.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Accessibility</p>
+                <p>Bracket triggers are <code>&lt;button&gt;</code> elements with <code>aria-expanded</code> and <code>aria-controls</code> attributes that reflect toggle state. Screen readers announce "Expand annotation" / "Collapse annotation" as the state changes.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Design intent</p>
+                <p>The annotation is the voice behind the voice. Where the main text is confident and declarative, the brackets are self-aware and digressive. They reward readers who pause. They're optional — the piece reads completely without them — but they contain some of its most honest moments.</p>
+            </div>
+        </section>
+
+        <!-- 05 VIEW MODES -->
+        <section class="section" id="modes">
+            <div class="section-header">
+                <span class="section-num">05</span>
+                <h2>View Modes</h2>
+            </div>
+
+            <p>Each mode is a different reading contract — a different theory of how to engage with the piece. They're not settings. They're states of attention.</p>
+
+            <div class="mode-grid">
+
+                <div class="mode-card">
+                    <div class="mode-card-key">—</div>
+                    <div class="mode-card-name">Default (Layered)</div>
+                    <p>Full experience. Parallax imagery behind text. All chrome visible. Both text and image layer active simultaneously. The intended default.</p>
+                </div>
+
+                <div class="mode-card">
+                    <div class="mode-card-key">L</div>
+                    <div class="mode-card-name">Split View</div>
+                    <p>Text occupies the left half. Imagery is pinned to the right at fixed position. Reading and looking happen side by side without overlap.</p>
+                </div>
+
+                <div class="mode-card">
+                    <div class="mode-card-key">H</div>
+                    <div class="mode-card-name">Read Mode</div>
+                    <p>All chrome hidden. Stats widget ghosts to 8% opacity but prev/next buttons remain live. Background images still surface. Longpress (300ms) on mobile triggers this. Top-right hotspot restores UI.</p>
+                </div>
+
+                <div class="mode-card">
+                    <div class="mode-card-key">F</div>
+                    <div class="mode-card-name">Focus Mode</div>
+                    <p>Chrome hidden. Background image layer suppressed. Grain, vignette, and edge blur removed. Cursor becomes a letterbox thumbnail on image-trigger hover. The purest reading state.</p>
+                </div>
+
+            </div>
+
+            <p>Modes are not mutually exclusive with themes — you can be in Focus Mode with the Newspaper theme active. The mode cluster widget reflects active state via a goldenrod glow on each key button.</p>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Hotspots</p>
+                <p>In both Read Mode and Focus Mode, the top-right corner of the viewport becomes an invisible hotspot. Moving the cursor there transforms it into a close (<code>✕</code>) cursor. Clicking restores the full UI — no keyboard required.</p>
+            </div>
+        </section>
+
+        <!-- 06 CHAPTERS -->
+        <section class="section" id="chapters">
+            <div class="section-header">
+                <span class="section-num">06</span>
+                <h2>Chapters &amp; Subchapters</h2>
+            </div>
+
+            <p>The narrative is divided into 11 chapters, each beginning at a defined sentence. Chapters are structural — they group related content and provide jump targets. Subchapters are editorial — they title sections within a chapter without creating navigation targets.</p>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Chapter Dropdown</p>
+                <p>Opened via the brand logo (top-left), the <code>C</code> key, or clicking any chapter break in the stream. Lists all chapters with their sentence count. The active chapter is highlighted. Clicking any item jumps immediately. The dropdown is a <strong>draggable widget</strong> — drag by the header to reposition it anywhere on screen. Position persists across open/close cycles for the session.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Progress Rail</p>
+                <p>A column of dots on the right edge (desktop). Each dot represents a chapter. The active chapter glows gold. Completed chapters are filled at reduced opacity. Hovering reveals the chapter title via a tooltip. Clicking jumps to that chapter.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Subchapter Navigation</p>
+                <p>The left rail accessibility controls include subchapter stepping — jump forward or backward by subchapter section within the current chapter. Useful for skimming through long chapters without losing structural position.</p>
+            </div>
+        </section>
+
+        <!-- 07 KEYBOARD -->
+        <section class="section" id="keyboard">
+            <div class="section-header">
+                <span class="section-num">07</span>
+                <h2>Keyboard Shortcuts</h2>
+            </div>
+
+            <p>The full keyboard map. All shortcuts are single-key unless noted. Case-insensitive unless noted.</p>
+
+            <table class="key-table" aria-label="Keyboard shortcuts">
+                <thead>
+                    <tr>
+                        <th style="width:160px">Key</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="key-badge">Space</span></td>
+                        <td class="key-action">Next sentence</td>
+                    </tr>
+                    <tr>
+                        <td><span class="key-badge">↓</span> <span class="key-badge">j</span></td>
+                        <td class="key-action">Next sentence</td>
+                    </tr>
+                    <tr>
+                        <td><span class="key-badge">↑</span> <span class="key-badge">k</span></td>
+                        <td class="key-action">Previous sentence</td>
+                    </tr>
+                    <tr>
+                        <td><span class="key-badge">Backspace</span></td>
+                        <td class="key-action">Previous sentence</td>
+                    </tr>
+                    <tr>
+                        <td><span class="key-badge">→</span></td>
+                        <td class="key-action">Next chapter</td>
+                    </tr>
+                    <tr>
+                        <td><span class="key-badge">←</span></td>
+                        <td class="key-action">Previous chapter</td>
+                    </tr>
+                    <tr>
+                        <td><span class="key-badge">G</span></td>
+                        <td class="key-action">Toggle Image Grid</td>
+                    </tr>
+                    <tr>
+                        <td><span class="key-badge">C</span></td>
+                        <td class="key-action">Toggle Chapter dropdown</td>
+                    </tr>
+                    <tr>
+                        <td><span class="key-badge">H</span></td>
+                        <td class="key-action">Toggle Read Mode (hide/show UI)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="key-badge">F</span></td>
+                        <td class="key-action">Toggle Focus Mode</td>
+                    </tr>
+                    <tr>
+                        <td><span class="key-badge">T</span></td>
+                        <td class="key-action">Cycle theme (Default → Newspaper → Sport)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="key-badge">L</span> <span class="key-badge">Shift</span></td>
+                        <td class="key-action">Toggle Layout (Layered ↔ Split)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="key-badge">Home</span></td>
+                        <td class="key-action">Reset to first sentence</td>
+                    </tr>
+                    <tr>
+                        <td><span class="key-badge">Esc</span> <span class="key-badge">X</span></td>
+                        <td class="key-action">Close active overlay / exit mode / close dropdown</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Escape follows a priority order: Focus Mode → Read Mode → Chapter Dropdown → Image Grid → Split View → Rotate Warning.</p>
+        </section>
+
+        <!-- 08 CHROME & WIDGETS -->
+        <section class="section" id="chrome">
+            <div class="section-header">
+                <span class="section-num">08</span>
+                <h2>Chrome &amp; Widgets</h2>
+            </div>
+
+            <p>All persistent UI chrome follows the same visual grammar: <code>rgba(0,0,0,0.6)</code> surface, <code>1px</code> border at <code>rgba(255,255,255,0.1)</code>, <code>6px</code> radius, <code>backdrop-filter: blur(12px)</code>. All draggable widgets share a consistent drag handle glyph and grab cursor.</p>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Mode Cluster (top-right)</p>
+                <p>An inline row of key buttons: <strong>SPC, G, C, F, H, T, L</strong>. Each button is labeled with its key and a one-word description. Active modes glow accent gold. The cluster is draggable. On mobile, F, H, C, and SPC are hidden — only G, T, and L are shown.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Stats Widget (bottom-left, desktop)</p>
+                <p>Displays three live counters: sentences read, brackets opened, and chapters visited. Values pulse with a scale animation on each increment. The widget is draggable. In Read Mode it ghosts to 8% opacity but the prev/next navigation buttons within it remain fully interactive.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Keyboard Legend (bottom-right, desktop)</p>
+                <p>A compact key cluster showing the four directional arrow keys. Each key is a button — clicking fires the same action as the keypress. Tooltips on hover. Draggable.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Left Rail</p>
+                <p>A narrow panel pinned to the left edge. Contains font-size accessibility controls (three levels: default, large, larger) and a vertical label. Disappears in Focus Mode and Read Mode.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Chapter Dropdown</p>
+                <p>Opens below the brand logo. Fully draggable by its header. Position is stored in memory and restored on each subsequent open — it remembers where you left it. Closing and reopening returns it to the last dragged position, not the CSS default.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Custom Cursor</p>
+                <p>The system cursor is hidden. A custom circular cursor (20px, difference blend mode by default) follows the pointer with smoothed interpolation. States: default ring, hovering (expands to 36px, accent tint), pointer (shrinks to 14px, filled), close-mode (expands to 60px with ✕ glyph), and thumb-active (220×130px letterbox thumbnail in Focus Mode).</p>
+            </div>
+        </section>
+
+        <!-- 09 THEMES -->
+        <section class="section" id="themes">
+            <div class="section-header">
+                <span class="section-num">09</span>
+                <h2>Themes</h2>
+            </div>
+
+            <p>Three themes, cycled via <code>T</code> or the mode cluster. Each theme is a complete visual and typographic reskin — not just a color swap.</p>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Default (Dark)</p>
+                <p>Black background. White text. Goldenrod accent (<code>#daa520</code>). Space Mono for UI, Crimson Text for body. Vignette at 85% opacity. Grain at 8%. Edge blur active.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Newspaper</p>
+                <p>Warm off-white background (<code>#faf8f3</code>). Near-black text. Saddle brown accent (<code>#8b4513</code>). Same type pairing. Vignette reduced to 12% — barely perceptible. Grain at 8%. The piece reads like something printed.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Sport</p>
+                <p>Deep charcoal background. Near-white text. Fire orange accent (<code>#fa3c00</code>). Switches body and UI font to <strong>Inter</strong>. Tighter line height, stronger letter-spacing, bolder chapter break borders. Accent-tinted borders throughout. The piece reads like a brief.</p>
+            </div>
+
+            <p>Theme transitions include a brief grain opacity fade to zero and back, preventing a harsh flash between color states.</p>
+        </section>
+
+        <!-- 10 MOBILE -->
+        <section class="section" id="mobile">
+            <div class="section-header">
+                <span class="section-num">10</span>
+                <h2>Mobile</h2>
+            </div>
+
+            <p>Mobile is a fully supported first-class experience with its own interaction model — not a degraded desktop view.</p>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">HUD Widget</p>
+                <p>A floating bar centered above the safe area at the bottom of the screen. Contains prev/next navigation buttons flanking the three stat counters. Animated entrance on load. In Read Mode, the widget ghosts to 8% opacity but both nav buttons remain fully interactive at full opacity.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Longpress → Read Mode</p>
+                <p>A 300ms longpress anywhere on the stream hides all UI chrome and enters Read Mode. This is intentionally close to a normal tap — deliberate but not laborious. A subtle vibration confirms the gesture on supported devices. Any swipe navigation works normally while in Read Mode.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Mobile Mode Cluster</p>
+                <p>The mode cluster is visible on mobile but reduced: F and H are hidden (longpress handles Read Mode; Focus Mode is desktop-cursor-dependent). G, T, and L remain — grid, theme, and layout are all mobile-accessible. No drag handle on mobile.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Rotate Warning</p>
+                <p>Split View requires landscape orientation. If a mobile device is in portrait while Split View is active, a rotate prompt appears. It includes a hotspot — tapping the top-right corner dismisses it and reverts to Layered mode.</p>
+            </div>
+        </section>
+
+        <!-- 11 TOASTS -->
+        <section class="section" id="toasts">
+            <div class="section-header">
+                <span class="section-num">11</span>
+                <h2>Toast Notification System</h2>
+            </div>
+
+            <p>Toasts are the site's passive onboarding mechanism. They surface contextually — triggered by behavior, time, or session state — and never repeat within a session once dismissed.</p>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Welcome Banner Pool</p>
+                <p>A pool of 6 welcome banners, each highlighting a different mechanic: navigation, annotations, image triggers, keyboard shortcuts, Split View, and the Image Grid. One is shown on each page load within a session, in sequence. After all 6 have been shown, the cycle restarts. The banner appears after a 1.8 second delay.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Ambient Pool</p>
+                <p>6 contextual hints that appear during natural reading pauses, beginning 30 seconds after load. These include deeper feature discoveries: the theme switcher, Split View, focus modes, the image grid, bracket annotations. Each fires once per session, never more than one every 45 seconds.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Idle Detection</p>
+                <p>If no navigation occurs for 15 seconds, an idle toast appears prompting the reader to continue. Different prompts for mobile (swipe hint) and desktop (spacebar hint).</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Bracket Nudge</p>
+                <p>If the reader reaches sentence 15 without opening any bracket annotation, a toast appears pointing toward the <code>[+]</code> mechanic. Fires once per session only if the condition is met.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Return Detection</p>
+                <p>If the reader has visited before (tracked via sessionStorage), a different welcome toast fires: "Welcome back — press Space to pick up where you left off."</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">End CTA</p>
+                <p>On reaching the final sentence, a banner toast fires with a call to action. This is the only toast that makes a direct ask of the reader.</p>
+            </div>
+
+            <p>Toasts appear in two variants: <strong>standard</strong> (bottom-left stack, up to 2 concurrent) and <strong>banner</strong> (centered below the header, one at a time, bypasses the stack limit). The <code>aria-live="polite"</code> container ensures screen readers announce toast content without interrupting active reading.</p>
+        </section>
+
+        <!-- 12 ACCESSIBILITY -->
+        <section class="section" id="accessibility">
+            <div class="section-header">
+                <span class="section-num">12</span>
+                <h2>Accessibility</h2>
+            </div>
+
+            <p>Accessibility was added as a deliberate pass after the site's core mechanics were built — not as an afterthought, but as a considered layer over an interaction model that is inherently non-standard.</p>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Keyboard Navigation</p>
+                <p>Every sentence is a focusable element (<code>tabindex="0"</code>, <code>role="button"</code>) with an <code>aria-label</code> containing the full sentence text. Tab moves through all interactive elements including sentences, image triggers, bracket buttons, nav buttons, and mode keys. Enter activates the focused sentence or trigger.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Screen Reader Support</p>
+                <p>A dedicated <code>aria-live="assertive"</code> announcer (<code>#srAnnouncer</code>) announces the active sentence text on each navigation step. This is separate from the toast <code>aria-live="polite"</code> region. The active sentence also receives <code>aria-current="true"</code>.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Focus Ring Behavior</p>
+                <p>Focus rings on sentences are suppressed during normal reading navigation (arrow keys, spacebar, scroll). They appear only when the user navigates via Tab — detected via a <code>data-tab-nav</code> attribute on <code>&lt;body&gt;</code> that is set on Tab keydown and cleared on any other input. All other interactive elements (buttons, triggers) always show focus rings.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Image Accessibility</p>
+                <p>Image triggers are <code>&lt;button&gt;</code> elements with <code>aria-label="View image: [phrase]"</code>. They respond to focus and blur for show/hide the same as hover. Grid images use the associated sentence text as alt text — the most semantically meaningful description available.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Landmarks &amp; Structure</p>
+                <p>The page has a <code>&lt;main&gt;</code> landmark, a <code>&lt;nav&gt;</code> wrapping the chapter progress rail, a <code>&lt;header&gt;</code>, and an <code>&lt;article&gt;</code> wrapping the stream. A skip link (<code>Skip to content</code>) is visible on focus, positioned fixed at the top-left and linked to <code>#stream</code>.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Reduced Motion</p>
+                <p>The site respects <code>prefers-reduced-motion</code>. Parallax movement, entrance animations, and transition durations are suppressed when the system preference is set.</p>
+            </div>
+
+            <div class="callout">
+                <p>The site's artistic vision and accessibility are not in conflict. The sentence-step mechanic is inherently more accessible than continuous scroll for some users — it enforces a reading pace and makes every unit of content discrete and addressable.</p>
+            </div>
+        </section>
+
+        <span class="ornament">· · ·</span>
+
+        <!-- FOOTER -->
+        <footer class="site-footer">
+            <div class="page-wrap" style="padding:0">
+                <span class="footer-brand">IFIMAYBEFRANK · Zack Gort · 2026</span>
+                <a href="/" class="footer-link">← Back to the piece</a>
+            </div>
+        </footer>
+
+    </div><!-- /page-wrap -->
+
+</body>
+</html>
