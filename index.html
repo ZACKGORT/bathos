@@ -1512,7 +1512,7 @@ body.compose-mode .compose-bar {
 .compose-bar-inner {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     padding: 10px 20px 0;
 }
 
@@ -1530,13 +1530,13 @@ body.compose-mode .compose-bar {
         border-right: none;
         border-bottom: none;
         box-shadow: none;
-        padding: 0 0 12px;
+        padding: 0 0 8px;
     }
     body.compose-mode .compose-bar {
         transform: translateY(0) !important;
     }
     .compose-drag-handle { display: none; }
-    .compose-bar-inner { padding: 10px 16px 0; }
+    .compose-bar-inner { padding: 8px 14px 0; gap: 6px; }
 }
 
 /* Compose header row */
@@ -1544,6 +1544,12 @@ body.compose-mode .compose-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
+}
+.compose-header-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 .compose-label {
     font-family: var(--ui-font);
@@ -1552,12 +1558,13 @@ body.compose-mode .compose-bar {
     text-transform: uppercase;
     letter-spacing: 0.12em;
     opacity: 0.6;
+    flex-shrink: 0;
 }
 .compose-chapter-select {
     font-family: var(--ui-font);
     font-size: 9px;
     color: var(--ink-2);
-    background: none;
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 3px;
     padding: 3px 8px;
@@ -1568,6 +1575,7 @@ body.compose-mode .compose-bar {
     -webkit-appearance: none;
     outline: none;
     transition: border-color 0.15s ease, color 0.15s ease;
+    max-width: 140px;
 }
 .compose-chapter-select:focus,
 .compose-chapter-select:hover {
@@ -1575,69 +1583,93 @@ body.compose-mode .compose-bar {
     color: var(--accent);
 }
 .compose-chapter-select option {
-    background: #0a0a0a;
+    background: var(--surface-raised);
     color: var(--ink);
 }
 
-/* Input row */
-.compose-input-row {
-    display: flex;
-    align-items: flex-end;
-    gap: 10px;
+/* Hints tooltip button — mobile only */
+.compose-hints-btn {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--ink-3);
+    padding: 3px 5px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    line-height: 0;
+    flex-shrink: 0;
 }
+.compose-hints-btn svg { width: 13px; height: 13px; }
+.compose-hints-btn:hover { border-color: var(--accent); color: var(--accent); }
+@media (max-width: 768px) {
+    .compose-hints-btn { display: flex; align-items: center; justify-content: center; }
+}
+
+/* Close button — always present, styled like a small key */
+.compose-close-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--ink-3);
+    font-family: var(--ui-font);
+    font-size: 10px;
+    padding: 3px 7px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    line-height: 1;
+    flex-shrink: 0;
+}
+.compose-close-btn:hover { border-color: var(--accent); color: var(--accent); }
+@media (min-width: 769px) {
+    /* Desktop: hide the ✕ — Escape or pencil toggle handles it */
+    .compose-close-btn { display: none; }
+}
+
+/* Desktop word count inline in header */
+.compose-wordcount-desktop {
+    white-space: nowrap;
+    opacity: 0.5;
+}
+@media (max-width: 768px) {
+    .compose-wordcount-desktop { display: none; }
+}
+
+/* Input — full width */
 .compose-input {
-    flex: 1;
+    width: 100%;
     background: rgba(255,255,255,0.04);
     border: 1px solid var(--border);
     border-radius: 6px;
-    padding: 12px 16px;
+    padding: 10px 14px;
     font-family: var(--body-font);
     font-size: clamp(16px, 2vw, 20px);
     color: var(--ink);
     outline: none;
     resize: none;
-    min-height: 52px;
+    min-height: 48px;
     max-height: 180px;
     line-height: 1.6;
     transition: border-color 0.2s ease, background 0.2s ease;
     caret-color: var(--accent);
     overflow-y: auto;
+    box-sizing: border-box;
 }
-.compose-input::placeholder {
-    color: var(--ink-3);
-    opacity: 0.5;
-}
+.compose-input::placeholder { color: var(--ink-3); opacity: 0.5; }
 .compose-input:focus {
     border-color: rgba(218,165,32,0.4);
     background: rgba(255,255,255,0.06);
 }
 
-/* Commit button */
-.compose-commit {
-    width: 44px;
-    height: 44px;
-    border-radius: 6px;
-    background: var(--accent);
-    border: none;
-    color: var(--bg-color);
-    cursor: pointer;
+/* Desktop hint row */
+.compose-hints-desktop {
     display: flex;
+    gap: 12px;
     align-items: center;
-    justify-content: center;
-    transition: all 0.15s ease;
-    flex-shrink: 0;
-    font-size: 18px;
+    padding-bottom: 4px;
 }
-.compose-commit:hover { transform: scale(1.06); filter: brightness(1.1); }
-.compose-commit:active { transform: scale(0.94); }
-.compose-commit svg { width: 18px; height: 18px; fill: currentColor; }
-.compose-commit:disabled { opacity: 0.3; cursor: default; transform: none; }
-
-/* Compose footer hints */
-.compose-hints {
-    display: flex;
-    gap: 16px;
-    align-items: center;
+@media (max-width: 768px) {
+    .compose-hints-desktop { display: none; }
 }
 .compose-hint {
     font-family: var(--ui-font);
@@ -1820,9 +1852,9 @@ body.compose-mode .mode-key.reader-key { display: none; }
 }
 .imagemap-grid-item:hover .item-phrase { opacity: 1; }
 
-/* HUD compose button */
+/* HUD compose button — shows in reader mode on mobile */
 .hud-compose-btn {
-    display: none; /* desktop: hidden, shown via media query */
+    display: none;
     color: var(--ink-3);
     transition: color 0.15s ease, background 0.15s ease;
 }
@@ -1831,15 +1863,15 @@ body.compose-mode .mode-key.reader-key { display: none; }
     background: var(--hover-tint);
 }
 
-/* HUD compose exit button — mobile only, compose mode only */
-.hud-compose-exit {
+/* HUD submit button — compose mode on mobile, accent colored */
+.hud-submit-btn {
     display: none;
-    color: var(--ink-3);
-    transition: color 0.15s ease, background 0.15s ease;
+    color: var(--bg-color) !important;
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    transition: opacity 0.15s ease, filter 0.15s ease;
 }
-body.compose-mode .hud-compose-exit {
-    color: var(--accent);
-}
+.hud-submit-btn:disabled { opacity: 0.35 !important; filter: none; }
 
 /* HUD nav group — prev/next side by side */
 .hud-nav-group {
@@ -1849,87 +1881,15 @@ body.compose-mode .hud-compose-exit {
 }
 
 @media (max-width: 768px) {
-    /* Show compose in HUD on mobile */
+    /* Reader mode: show compose toggle */
     .hud-compose-btn { display: flex; }
-    /* Show exit button in compose mode on mobile */
-    body.compose-mode .hud-compose-exit { display: flex; }
-    /* Hide compose toggle button when in compose (exit replaces it) */
+    /* Compose mode: swap compose toggle for submit */
+    body.compose-mode .hud-submit-btn { display: flex; }
     body.compose-mode .hud-compose-btn { display: none; }
-    /* Hide standalone compose toggle on mobile */
+    /* Hide standalone compose toggle */
     .compose-toggle { display: none; }
 }
 
-
-.compose-upload-placeholder {
-    width: 44px;
-    height: 44px;
-    border-radius: 6px;
-    background: rgba(255,255,255,0.02);
-    border: 1px dashed rgba(255,255,255,0.12);
-    color: var(--ink-3);
-    cursor: not-allowed;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    gap: 2px;
-    opacity: 0.45;
-    transition: opacity 0.15s ease;
-    position: relative;
-}
-.compose-upload-placeholder:hover { opacity: 0.6; }
-.compose-upload-placeholder svg { width: 15px; height: 15px; }
-.compose-upload-label {
-    font-family: var(--ui-font);
-    font-size: 7px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    line-height: 1;
-}
-
-
-.compose-bracket-btn {
-    font-family: var(--ui-font);
-    font-size: 10px;
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    color: var(--ink-3);
-    padding: 4px 8px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    white-space: nowrap;
-    letter-spacing: 0.04em;
-}
-.compose-bracket-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: var(--hover-tint);
-}
-
-/* Mobile-only close button inside compose bar */
-.compose-close-mobile {
-    display: none;
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    color: var(--ink-3);
-    font-family: var(--ui-font);
-    font-size: 11px;
-    padding: 4px 8px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    line-height: 1;
-}
-.compose-close-mobile:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-}
-@media (max-width: 768px) {
-    .compose-close-mobile { display: block; }
-}
 
 /* Writer stats morph */
 body.compose-mode #statSentencesSeen::after { content: ''; }
@@ -1941,7 +1901,6 @@ body.compose-mode .stat-label-writer { display: block; }
 body.compose-mode { padding-bottom: 0; }
 
 @media (max-width: 768px) {
-    .compose-bar { padding: 12px 16px 16px; }
     .compose-input { font-size: 16px; }
     .imagemap-picker { padding: 60px 16px 24px; }
     .imagemap-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
@@ -2018,13 +1977,13 @@ body.compose-mode { padding-bottom: 0; }
 
     <div id="statsWidget" class="stats-widget" title="Drag to move" aria-label="Reading stats and navigation">
         <div class="stats-drag-handle">⋮⋮</div>
-        <!-- Compose button — mobile HUD only -->
+        <!-- Compose button — mobile HUD only (reader mode) -->
         <button class="hud-nav-btn hud-compose-btn" id="hudComposeBtn" aria-label="Toggle compose mode" title="Compose">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
         </button>
-        <!-- Compose exit button — mobile only, visible only in compose mode -->
-        <button class="hud-nav-btn hud-compose-exit" id="hudComposeExit" aria-label="Exit compose mode" title="Exit Compose">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        <!-- Submit button — compose mode on mobile only -->
+        <button class="hud-nav-btn hud-submit-btn" id="hudSubmitBtn" aria-label="Commit sentence" title="Commit sentence">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
         </button>
         <div class="hud-divider"></div>
         <div class="stats-group">
@@ -2098,44 +2057,38 @@ body.compose-mode { padding-bottom: 0; }
     <div class="compose-bar" id="composeBar" aria-label="Compose">
         <div class="compose-drag-handle" id="composeDragHandle">⋮⋮</div>
         <div class="compose-bar-inner">
-        <div class="compose-header">
-            <span class="compose-label">Compose</span>
-            <div style="display:flex;gap:8px;align-items:center;">
-                <select class="compose-chapter-select" id="composeChapterSelect" aria-label="Select chapter">
-                </select>
-                <button class="compose-bracket-btn" id="composeBracketBtn" title="Insert bracket annotation">[+] Annotate</button>
-                <!-- Mobile-only close button — desktop uses Escape or the pencil toggle -->
-                <button class="compose-close-mobile" id="composeMobileClose" aria-label="Exit compose mode" title="Exit Compose">✕</button>
+            <div class="compose-header">
+                <span class="compose-label">Compose</span>
+                <div class="compose-header-controls">
+                    <select class="compose-chapter-select" id="composeChapterSelect" aria-label="Select chapter"></select>
+                    <!-- Desktop: word count inline -->
+                    <span class="compose-hint compose-wordcount-desktop" id="composeWordCount">0 words · 0 sentences</span>
+                    <!-- Mobile: tooltip/hints icon triggers toast -->
+                    <button class="compose-hints-btn" id="composeHintsBtn" aria-label="Show keyboard hints" title="Keyboard hints">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                    </button>
+                    <!-- Close — always visible -->
+                    <button class="compose-close-btn" id="composeMobileClose" aria-label="Exit compose mode" title="Exit Compose">✕</button>
+                </div>
             </div>
-        </div>
-        <div class="compose-input-row">
             <textarea
                 class="compose-input"
                 id="composeInput"
-                placeholder="Write a sentence. Press Enter or ↵ to commit it to the piece."
+                placeholder="Write a sentence…"
                 rows="2"
                 aria-label="Compose sentence"
                 spellcheck="true"
             ></textarea>
-            <button class="compose-upload-placeholder" id="composeUpload" aria-label="Image upload — coming soon" title="Image upload — coming soon" disabled>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-                <span class="compose-upload-label">Soon</span>
-            </button>
-            <button class="compose-commit" id="composeCommit" aria-label="Commit sentence" disabled>
-                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-            </button>
-        </div>
-        <div class="compose-hints">
-            <span class="compose-hint"><kbd>Enter</kbd> commit sentence</span>
-            <div class="compose-hint-divider"></div>
-            <span class="compose-hint"><kbd>Shift+Enter</kbd> line break</span>
-            <div class="compose-hint-divider"></div>
-            <span class="compose-hint"><kbd>###</kbd> subchapter</span>
-            <div class="compose-hint-divider"></div>
-            <span class="compose-hint"><kbd>↑↓</kbd> navigate piece</span>
-            <div class="compose-hint-divider"></div>
-            <span class="compose-hint" id="composeWordCount">0 words · 0 sentences</span>
-        </div>
+            <!-- Desktop hint row — hidden on mobile -->
+            <div class="compose-hints compose-hints-desktop">
+                <span class="compose-hint"><kbd>Enter</kbd> commit</span>
+                <div class="compose-hint-divider"></div>
+                <span class="compose-hint"><kbd>Shift+Enter</kbd> line break</span>
+                <div class="compose-hint-divider"></div>
+                <span class="compose-hint"><kbd>###</kbd> subchapter</span>
+                <div class="compose-hint-divider"></div>
+                <span class="compose-hint"><kbd>↑↓</kbd> navigate</span>
+            </div>
         </div><!-- /.compose-bar-inner -->
     </div>
 
@@ -2312,299 +2265,141 @@ const parallax = { text: { x: 0, y: 0, targetX: 0, targetY: 0 }, image: { x: 0, 
 // DATA
 // ===================================
 const chapters = [
-    { id: 0, title: "Hello World", startText: "The year is 2026" },
-    { id: 1, title: "Words from the Maker", startText: "This is my curriculum vitae" },
-    { id: 2, title: "Introduction", startText: "I am Zack" },
-    { id: 3, title: "The Early Days", startText: "I built my first computer" },
-    { id: 4, title: "Suburbia Startup", startText: "A turning point at Turn5 Inc." },
-    { id: 5, title: "#AgencyLife", startText: "One Sixty Over Ninety" },
-    { id: 6, title: "The New York Experience", startText: "Enter FlightPath." },
-    { id: 7, title: "Remote, Not Removed", startText: "This is the Whey" },
-    { id: 8, title: "About", startText: "Currently I'm seeking my next" },
-    { id: 9, title: "Conclusion", startText: "Beyond the work, there's music" },
-    { id: 10, title: "Extras", startText: "You can find my music on SoundCloud" }
+    { id: 0, title: "Arrival", startText: "That feeling of arrival" },
+    { id: 1, title: "The Pause", startText: "Most tools don’t honor that moment" },
+    { id: 2, title: "The Format", startText: "This format was built inside that pause" },
+    { id: 3, title: "That Rhythm", startText: "That rhythm has a name" },
+    { id: 4, title: "Begin", startText: "You’re here now" }
 ]
 
 const imageMap = {
-    'burn and turn': 'https://i.ibb.co/Y7wVfbfK/DSC08212.webp',
-    'content churn': 'https://i.ibb.co/MD923R2f/DSC08254.webp',
-    'void': 'https://i.ibb.co/MZbMqsT/6039d4bbb15be328fc33b54d-IMG-6478.jpg',
-    'paused': 'https://i.ibb.co/BjZQ8KG/2322060064540385797-5144774570.jpg',
-    'intentional': 'https://i.ibb.co/m5sNTvYX/603a967916b10d5bef5a6dd8-ZAX02712-1.webp',
-    'beat': 'https://i.ibb.co/twyPzFZf/ZAX01304.webp',
-    'moment to movement': 'https://i.ibb.co/gMDT38J5/IMG-20200527-221611-475.jpg',
-    'I loathe to be so bold': 'https://i.ibb.co/0yjJ4j8L/603a967a5dc3e982f571b744-ZAX00968.webp',
-    'my own way': 'https://i.ibb.co/bHsf63Q/2269150474215204867-5144774570.jpg',
-    'conviction counters': 'https://i.ibb.co/bjCjbfbT/603a93efdfd184c21ef2d238-IMG-3352.webp',
-    'curriculum vitae': 'https://i.ibb.co/SwPmvZd8/1-Zpy-OMlmz-Ma0r-Pl-NY-3-KXA.webp',
-    'my impetus': 'https://i.ibb.co/ym4M89VT/1-sq-USg-c1x-GQx-Zd-QS4-L7f-Sw.webp',
-    'my innovations': 'https://i.ibb.co/r2nhMymB/1-Dkcm-PIZj6ro-ZML4w2k-Nk-Mw.webp',
-    'eyes and mind': 'https://i.ibb.co/DPJM0yfz/1-k-Y6yg0chz7-Puu-Wgrl-YNMA.webp',
-    'building something': 'https://i.ibb.co/Vc4F4vfT/ZAX09994.jpg',
-    'proof of concept': 'https://i.ibb.co/9HzBPc7Y/603a93eea83b1aab7a98c35b-DSC08228.webp',
-    'But first': 'https://i.ibb.co/9HWqZ86P/603a95edd9a3b56723de7edc-DSC00910.webp',
-    'Zack': 'https://i.ibb.co/NZ0y6Hn/2272303929273225747-5144774570.jpg',
-    'left-handed': 'https://i.ibb.co/Kp0wZtgT/ZAX01496.jpg',
-    'self-taught': 'https://i.ibb.co/52Cm4Cf/63bc58fccaee2352e1c9b36d-Embedded-Image-3.jpg',
-    'artist & craftsman': 'https://i.ibb.co/DDFpj6Dm/ZAX03810.jpg',
-    'dreamer': 'https://i.ibb.co/hqCtdrS/ZAX02263.jpg',
-    'to discover': 'https://i.ibb.co/FbxpWLhV/DSC08352-1.jpg',
-    'built my first computer': 'https://i.ibb.co/fdxZdwwC/1-d-MG5-YE20sk-Uzo3z7-GIyf1w.webp',
-    'pirated copies': 'https://i.ibb.co/SwPmvZd8/1-Zpy-OMlmz-Ma0r-Pl-NY-3-KXA.webp',
-    'study at university': 'https://i.ibb.co/gbVdcLRq/hands-by-zackgort-dckl0r-375w-2x.jpg',
-    'studied what I saw': 'https://i.ibb.co/mVkj6sxm/1-g-Ax-Wr-Bz-Rv-QDdn-TOBp-GHGt-A.webp',
-    'observed, almalgamated, and carried my craft': 'https://i.ibb.co/zWddYDKH/1-b7-R1-Bb-D3kn-TIbl-Ly-MZd-Xg.webp',
-    'what I saw around me': 'https://i.ibb.co/8LXV5fSP/1-mn-DJg-S7ab-Si-Pjlzk2-Bxk-TA.webp',
-    'studied typography': 'https://i.ibb.co/9mcrj9tg/1-h9lj-VOzz-RT-Irakga-DSWv-Q.webp',
-    'client work': 'https://i.ibb.co/9mcrj9tg/1-h9lj-VOzz-RT-Irakga-DSWv-Q.webp',
-    'reading books': 'https://i.ibb.co/9mcrj9tg/1-h9lj-VOzz-RT-Irakga-DSWv-Q.webp',
-    'examining magazines': 'https://i.ibb.co/9mcrj9tg/1-h9lj-VOzz-RT-Irakga-DSWv-Q.webp',
-    'faux website concepts': 'https://i.ibb.co/DHHzHw8G/1-pu-HZ09-ELFPd-Aa-MK0-HAxq-Q.webp',
-    'Craigslist post': 'https://i.ibb.co/mg5GQc5/1-lm5-BUxr0d-Dq73b-Woi3vy4w.webp',
-    'cover letter': 'https://i.ibb.co/mg5GQc5/1-lm5-BUxr0d-Dq73b-Woi3vy4w.webp',
-    'formal education': 'https://i.ibb.co/WpPWpTwN/Oaks-2.webp',
-    'Turn5 Inc': 'https://i.ibb.co/nNdHf3zM/1-dt-Ggr-Sm7am-TRi-5j-QMVe-Iw.webp',
-    'where you wear the hat you want': 'https://i.ibb.co/XfC5FTbn/IMG-20200505-222710-446.webp',
-    'Canon Rebel': 'https://i.ibb.co/W42LZmDK/ZAX01271.jpg',
-    'Charged with designing': 'https://i.ibb.co/fG0dXSr0/1-m7-Hfhu-QO4-Ugr1-Vte-Zf6it-A.webp',
-    'package design': 'https://i.ibb.co/KJsXgPv/1-dy-MNhi-XFPWPe9og0-dbv-Q.webp',
-    'catalogue design': 'https://i.ibb.co/KJsXgPv/1-dy-MNhi-XFPWPe9og0-dbv-Q.webp',
-    'product photographer': 'https://i.ibb.co/C38FHDx9/1-FYt-Vic-HKj-LDPLW2rcn-J1u-A.webp',
-    'OEM quality': 'https://i.ibb.co/5WSx4J20/1-GFvd-yw-Ap-PELXmtr-Fbx-Vug.webp',
-    'Photographing and retouching': 'https://i.ibb.co/w581TnW/1-ktn-HKT8-Zg-IADpbe-Byv2bqg.webp',
-    'Pivot to web': 'https://i.ibb.co/sv8nw0Dp/1-rqzz-Cscn-OIL96-Vm-Ln0v7d-A.webp',
-    'We designed everything from ground-up': 'https://i.ibb.co/QdmJdXh/AM-wire.jpg',
-    'email and ads': 'https://i.ibb.co/vxXJ7fSV/1-rqzz-Cscn-OIL96-Vm-Ln0v7d-A.webp',
-    'user testing': 'https://i.ibb.co/fG0dXSr0/1-m7-Hfhu-QO4-Ugr1-Vte-Zf6it-A.webp',
-    'forty million per year': 'https://i.ibb.co/YTKt6LcS/IMG-20210515-151006.webp',
-    'city life': 'https://i.ibb.co/zhPSN9QQ/1-6-Cxwk-Ywhhn5-Z-FHINfdp-WA.webp',
-    'Leadnomics': 'https://i.ibb.co/ZG6v0p5/image-10.png',
-    'multiple verticals': 'https://i.ibb.co/KLPDrZQ/image-5-Copy.png',
-    'payday loans': 'https://i.ibb.co/7N4r6FF5/603d0b8b04655c6fd42d2253-DSC08281.jpg',
-    'catastrophic financial decisions': 'https://i.ibb.co/7JX2kx7T/DSC08804.jpg',
-    'pay and perks': 'https://i.ibb.co/5jqqSwp/Cx-BW-h-GXg-AQt-K2m.jpg',
-    'conversion rate': 'https://i.ibb.co/N3Sj82y/6463e2dfb2d84c89977adcf7-IMG-20200204-185021-01.jpg',
-    'Business bides by imperative': 'https://i.ibb.co/PG3F2y6D/vermont-509.jpg',
-    'completely comminuted clavicle': 'https://i.ibb.co/Z1NBn9Px/clavicle.webp',
-    'downtime': 'https://i.ibb.co/pvJvGhnt/ZAX02330-1.webp',
-    'Karma': 'https://i.ibb.co/h1yDszfq/2863797725928703996-5144774570.webp',
-    'I think so': 'https://i.ibb.co/BHKQwjNL/life.webp',
-    'interactive haiku': 'https://i.ibb.co/27BznHGJ/1-BNs-Ch8k1bclj-KMu1-KN-g.gif',
-    'Enter #agencylife': 'https://i.ibb.co/twJMjr51/IMG-20150924-142223609.webp',
-    'One Sixty Over Ninety': 'https://i.ibb.co/5gGkM1yF/1-a-QOv-TWfv-Awf6m7-oy-Zy-Gy-A.webp',
-    'Interactive Department': 'https://i.ibb.co/fd8Ycjyv/1-pch6xh-Ep-Fo-Xxli-AGb-Nnr7-Q.webp',
-    'longer nights': 'https://i.ibb.co/yBcGXrQc/IMG-20150415-134735718.webp',
-    'lots of weekends': 'https://i.ibb.co/SwzHM3CZ/1-o-P6kr-DDq-Pp-Sg-F4-Ag-Fr-WClw.webp',
-    'grayscale wireframes': 'https://i.ibb.co/nNLv6NKB/1-CQ-4u-Tk-D6-MUBWABKw-JIZg-A.webp',
-    'Clients included': 'https://i.ibb.co/8LmdVjbY/160over90brands.webp',
-    'scientific': 'https://i.ibb.co/SzM25Fb/1-vk-U8l-Zmqn-OHghe-Os-K0qtrw.webp',
-    'expressive': 'https://i.ibb.co/0VmJ708g/work3.webp',
-    'novel': 'https://i.ibb.co/k2CCgp95/1-b8ad-Q-Cb-L1-YXoe6o-Fs4t-SQ.webp',
-    'considered': 'https://i.ibb.co/pBYP6wt8/1-HXIU3nxu-ZGq-Ne-Ef3-Wv-Lf-MQ.webp',
-    'I had a hand': 'https://i.ibb.co/rR74bLkf/1-o-XV3b-GDEf-TKoh-Ue-ICCjc1-A.webp',
-    'O3 World': 'https://i.ibb.co/LXmyD2hq/IMG-20170104-184947-650.webp',
-    'digital product shop': 'https://i.ibb.co/Swf714Sd/o3.webp',
-    'agile in nature': 'https://i.ibb.co/v6fqJ9b9/1-I-n-HQKs7-BIXo-Y0onf-Nxn-Og.webp',
-    'scrum led': 'https://i.ibb.co/mr7gnpTg/1-y-GJCqkzizxa-Uxk3-R5-DCD8g.webp',
-    'daily stand-ups': 'https://i.ibb.co/zTKr9Dh9/1-7w-EKA8du-Scc-OZw-Im-A-6j-SQ.webp',
-    'Lean UX': 'https://i.ibb.co/Y49DcPw2/1-KE8g-FA6w4wud1u-DAr-A4-Yv-Q.webp',
-    'we workshopped': 'https://i.ibb.co/ZW3j6T1/Photo-Selects-Sketch-Prep-1-1-Houghton-Nav.jpg',
-    'we wireframed': 'https://i.ibb.co/Dg9fM8q8/1-Tut-Ce-PQB0b-SCo-Mf-MTWJb-Q.webp',
-    'we shipped': 'https://i.ibb.co/v4q7TbDZ/1-t-Yd-DX2-Ql-VLw-XI7gm3ev-MLw.webp',
-    'Downtown from Fishtown was Workarea': 'https://i.ibb.co/mjt5Myw/1-l-EJetj-Ut85-CTbb24d-BTFk-A.webp',
-    'napkin sketches': 'https://i.ibb.co/ZzCTQbWf/1-e-SNZnvlr-UJAz-AL1-Jx-T0-ZHQ.webp',
-    'Five Foot Gorilla': 'https://i.ibb.co/mjt5Myw/1-l-EJetj-Ut85-CTbb24d-BTFk-A.webp',
-    'proprietary SaaS': 'https://i.ibb.co/Y49DcPw2/1-KE8g-FA6w4wud1u-DAr-A4-Yv-Q.webp',
-    'reframe': 'https://i.ibb.co/C3fQ63NH/vermont-500.jpg',
-    'Enter FlightPath': 'https://i.ibb.co/3xrYxxR/ZAX09787.jpg',
-    'Hello, New York City': 'https://i.ibb.co/HpnrrYMR/2269419019461331921-5144774570.webp',
-    'emerging from bankruptcy': 'https://i.ibb.co/k2svMNFv/603d10120fba838e599b6b5e-IMG-1563.webp',
-    'Sure, this was risky': 'https://i.ibb.co/DD6wrNzS/603d102dae26b192aef6ab4a-IMG-3023.jpg',
-    'They needed my help': 'https://i.ibb.co/N6hxQ0RG/1-k-SDc-GT46-VQM6-Kk25-SPr-Acg.webp',
-    'influence': 'https://i.ibb.co/2KG97tH/63bc73fb17c4cf8bb0731b4f-IMG-20220717-004144-444.webp',
-    'confidence': 'https://i.ibb.co/xHcVc0k/63bc73fb6521f9025bdacc8c-IMG-20220719-182310-414.webp',
-    'I had agency': 'https://i.ibb.co/gTrCrJd/6463e0a86edfa1bd8ed7ed78-IMG-20220625-231733-173.webp',
-    'environment': 'https://i.ibb.co/WpyqgbYQ/1-9-EZTgvxtt-DXOac-Hz-I9axe-Q.gif',
-    'Commuting from Philly': 'https://i.ibb.co/23WVc0PW/tunnel-ANIMATION.gif',
-    'Up and out': 'https://i.ibb.co/LdDMT8zw/pennstation.webp',
-    'Sunrise and Sunset': 'https://i.ibb.co/chqNfQGJ/skylinephilly.webp',
-    'skylines': 'https://i.ibb.co/cK6Nywxq/skyline.webp',
-    'Worth it': 'https://i.ibb.co/XkMWjBvp/newyorksubway.webp',
-    'Totally': 'https://i.ibb.co/MDw7nWfZ/greenpoint.webp',
-    'killing it': 'https://i.ibb.co/21QjMR93/commute.webp',
+    // ── Before We Begin ──
+    'every story': 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1200&q=80',
+    'weight it deserves': 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&q=80',
+    'sentence by sentence': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1200&q=80',
+    'image and the word': 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=1200&q=80',
+    'architecture of attention': 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&q=80',
 
-    'found love': 'https://i.ibb.co/gtfnzmc/6463db5b885de5f0e9c14019-IMG-20190918-010900-01-1.jpg',
-    
-    'From Workarea to LiveArea': 'https://i.ibb.co/mSR1GDc/2309287483437628607-5144774570.jpg',
-    'From IC to Manager': 'https://i.ibb.co/XZymcJck/pinstripes.webp',
-    'gamut of B2B & B2C': 'https://i.ibb.co/qLhNvJ4b/ZAX02219.jpg',
-    'ownership': 'https://i.ibb.co/j5MVLzT/2421302057245775717-5144774570.jpg',
-    'ran discovery': 'https://i.ibb.co/jkbWhf7c/603d1185cafcb2591f42b1ad-IMG-3932.jpg',
-    'directed and delegated': 'https://i.ibb.co/mVVMY8HQ/603d8d7a3a6df470a4a661a1-DSC00726.jpg',
-    'I socialized my solutions': 'https://i.ibb.co/mC5TTsXX/603d100d889053cc334ee5fc-IMG-2083.jpg',
-    
-    'world worked': 'https://i.ibb.co/HVt8q9Q/63bc58fdd5af3c7496ddc47b-Embedded-Image-18.jpg',
-    'Once familiar faces faded': 'https://i.ibb.co/LQyhkV7/2421291975296513469-5144774570.jpg',
-    'muffled, or on mute': 'https://i.ibb.co/9HPBnC6/2278045066214592879-5144774570.jpg',
-    
-    'bandwidth': 'https://i.ibb.co/5pYQjBh/ZAX04125.jpg',
-    'The show must go on': 'https://i.ibb.co/8cFGqNB/6463c90009f6d464ffca5fe3-wellbeaight.jpg',
-    'more time computing': 'https://i.ibb.co/Xr97WzXX/DSC06055-1.webp',
-    'Camera on': 'https://i.ibb.co/B6vFwH6/zoom-zack.gif',
-    'This is the Whey': 'https://i.ibb.co/09K8Z99/image-624.png',
+    // ── The Student ──
+    'first draft': 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&q=80',
+    'college application': 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&q=80',
+    'post it or publish it': 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1200&q=80',
+    'personal essay': 'https://images.unsplash.com/photo-1471107191679-f26174d2d41e?w=1200&q=80',
+    'writing toward a moment': 'https://images.unsplash.com/photo-1519791883288-dc8bd696e667?w=1200&q=80',
+    'witnessed': 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1200&q=80',
+    'something real to say': 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=1200&q=80',
+    'format demands it': 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1200&q=80',
+    'one line at a time': 'https://images.unsplash.com/photo-1502003148287-a82ef80a6abc?w=1200&q=80',
 
-    'Cards Against Bad UX': 'https://i.ibb.co/jv7dC3hH/1-m-Zdgz7y-Elh7n-WKuu-S8-XZ2g.webp',
-    'jargon-laden spreadsheets': 'https://i.ibb.co/PRpwWXQ/1-a9to-Sr99x6-Nt-E5-YC7b-Gnzw.webp',
-    'single-sided meetings': 'https://i.ibb.co/PRpwWXQ/1-a9to-Sr99x6-Nt-E5-YC7b-Gnzw.webp',
-    'As a shopper': 'https://i.ibb.co/6Jf5xj5D/1-Gx-Z4jd-EHO3-IWmhx-Tr-Dff-CA.webp',
-    'content manager': 'https://i.ibb.co/6Jf5xj5D/1-Gx-Z4jd-EHO3-IWmhx-Tr-Dff-CA.webp',
-    'guest user': 'https://i.ibb.co/6Jf5xj5D/1-Gx-Z4jd-EHO3-IWmhx-Tr-Dff-CA.webp',
-    'UX Manager': 'https://i.ibb.co/VYpfVW1J/1-q6-XH2u-HTIVh-Nd-NY0ab-XW3g.webp',
-    'one-point-two million': 'https://i.ibb.co/VYpfVW1J/1-q6-XH2u-HTIVh-Nd-NY0ab-XW3g.webp',
-    '$1.2m': 'https://i.ibb.co/VYpfVW1J/1-q6-XH2u-HTIVh-Nd-NY0ab-XW3g.webp',
-    'two-thirty-five per hour': 'https://i.ibb.co/VYpfVW1J/1-q6-XH2u-HTIVh-Nd-NY0ab-XW3g.webp',
-    '$235/hr': 'https://i.ibb.co/VYpfVW1J/1-q6-XH2u-HTIVh-Nd-NY0ab-XW3g.webp',
-    'Elva Design Group': 'https://i.ibb.co/cSQCgNQY/work1.webp',
-    'Elva': 'https://i.ibb.co/cSQCgNQY/work1.webp',
-    'General Nutrition Centers': 'https://i.ibb.co/pBMMxY1Z/11.webp',
-    'GNC': 'https://i.ibb.co/7N2rDqrN/8.webp',
-    'mobile-first navigation': 'https://i.ibb.co/vx76zjgf/10.webp',
-    'shake things up': 'https://i.ibb.co/rft2bf0T/9.webp',
-    'modernized and optimized': 'https://i.ibb.co/cSQCgNQY/work1.webp',
-    'Huge': 'https://i.ibb.co/7JSWc10M/1-p-XU6-Sp-Y7-Mx-MKiyf-VI-976g.gif',
-    'single user flow': 'https://i.ibb.co/7JSWc10M/1-p-XU6-Sp-Y7-Mx-MKiyf-VI-976g.gif',
-    'siloed': 'https://i.ibb.co/7JSWc10M/1-p-XU6-Sp-Y7-Mx-MKiyf-VI-976g.gif',
-    'Code and Theory': 'https://i.ibb.co/jP8rS95G/1-5g-Mvv7027-cm7r0vm-IDy1-A.webp',
-    'Senior Designer': 'https://i.ibb.co/99qqJkRJ/1-aso-Tm-Z5c-V3-Zkodr-Mcu-Yjig.webp',
-    'ACD': 'https://i.ibb.co/99qqJkRJ/1-aso-Tm-Z5c-V3-Zkodr-Mcu-Yjig.webp',
-    'Directly Responsible Individual': 'https://i.ibb.co/99qqJkRJ/1-aso-Tm-Z5c-V3-Zkodr-Mcu-Yjig.webp',
-    'Publicis Sapient': 'https://i.ibb.co/XkM2hn8n/bny1.png',
-    'Digital Transformation': 'https://i.ibb.co/vvMZmq94/bny2.png',
-    'BNY Mellon': 'https://i.ibb.co/xS49C07B/bny3.png',
-    'Team Lead': 'https://i.ibb.co/rR74bLkf/1-o-XV3b-GDEf-TKoh-Ue-ICCjc1-A.webp',
-    'exhaustive research': 'https://i.ibb.co/XrpnL50W/1-x-Qoqr-V021-PFk0sxts5-AWAg.webp',
-    'industry research': 'https://i.ibb.co/XrpnL50W/1-x-Qoqr-V021-PFk0sxts5-AWAg.webp',
-    'client workshops': 'https://i.ibb.co/XfXGRWZ5/1-RTEI5a-Ccw31fj-Fzqj-Bg-FEg.webp',
-    'consistent presence': 'https://i.ibb.co/fdW3K2gp/1-1gjr-Eff-Bio-JYo-EAv-MWHf-KQ.webp',
-    'in-office presence': 'https://i.ibb.co/fdW3K2gp/1-1gjr-Eff-Bio-JYo-EAv-MWHf-KQ.webp',
-    'laid off': 'https://i.ibb.co/jkpcGvMF/1-f-TX-d-BN7l7of-M3nf-KU7p8g.webp',
-    'Design Systems': 'https://i.ibb.co/4wtq5p9V/1-g-C-cm-PMo-CAMgckq051lw-Zg.webp',
-    'design systems': 'https://i.ibb.co/4wtq5p9V/1-g-C-cm-PMo-CAMgckq051lw-Zg.webp',
-    'data paradigm': 'https://i.ibb.co/4wtq5p9V/1-g-C-cm-PMo-CAMgckq051lw-Zg.webp',
-    'networking': 'https://i.ibb.co/sJkpkV9Q/1-l4jg-O1-4g-Ey-Wy-IBEQZho0g.webp',
-    'low voltage networking': 'https://i.ibb.co/sJkpkV9Q/1-l4jg-O1-4g-Ey-Wy-IBEQZho0g.webp',
-    'RJ45': 'https://i.ibb.co/ZR7Tb6YW/1-b-Q-s-X24b-Qk-Utx50-Q5j-MZNg.webp',
-    'terminate an RJ45': 'https://i.ibb.co/ZR7Tb6YW/1-b-Q-s-X24b-Qk-Utx50-Q5j-MZNg.webp',
-    '30–45 seconds': 'https://i.ibb.co/ZR7Tb6YW/1-b-Q-s-X24b-Qk-Utx50-Q5j-MZNg.webp',
-    'thirty to forty-five seconds': 'https://i.ibb.co/ZR7Tb6YW/1-b-Q-s-X24b-Qk-Utx50-Q5j-MZNg.webp',
-    'Run cables': 'https://i.ibb.co/fdvw7XLN/1-PGk-VR2s-OAfc-Kk5kk-Trn-Qdw.webp',
-    'security systems': 'https://i.ibb.co/fdvw7XLN/1-PGk-VR2s-OAfc-Kk5kk-Trn-Qdw.webp',
-    'cable management': 'https://i.ibb.co/fdvw7XLN/1-PGk-VR2s-OAfc-Kk5kk-Trn-Qdw.webp',
-    'twist parity': 'https://i.ibb.co/2YMPHshQ/1-3gn-Cq0a4-Kb-Y8-MGJy-VKy-P-A.webp',
-    'different parts of my brain': 'https://i.ibb.co/2YMPHshQ/1-3gn-Cq0a4-Kb-Y8-MGJy-VKy-P-A.webp',
-    'intoview.pro': 'https://i.ibb.co/ym1z1pyb/DSC05994.webp',
-    'intoview': 'https://i.ibb.co/ym1z1pyb/DSC05994.webp',
-    'platform for creative exploration': 'https://i.ibb.co/23QsQrCG/DSC05954.webp',
-    'note-taking app': 'https://i.ibb.co/qLWQC0cN/DSC08358.webp',
-    'kanban': 'https://i.ibb.co/xSCsZcyn/wmzWGlaw.webp',
-    'emdash.click': 'https://i.ibb.co/0p7Ktz5L/1-Tut-Ce-PQB0b-SCo-Mf-MTWJb-Q.webp',
-    'em dash utility': 'https://i.ibb.co/0p7Ktz5L/1-Tut-Ce-PQB0b-SCo-Mf-MTWJb-Q.webp',
-    'sees potential': 'https://i.ibb.co/4Rfyq6Z8/1-S3-L6-fci-CRNsv-Vq-Pk8-NRA.webp',
-    'someone out there': 'https://i.ibb.co/4Rfyq6Z8/1-S3-L6-fci-CRNsv-Vq-Pk8-NRA.webp',
-    'mouths to feed': 'https://i.ibb.co/gpr7smN/1-Zs0lu-PIi-C5ly-AOEo2-LLEl-A.webp',
-    'think different': 'https://i.ibb.co/DDw627yH/1-A-KU6r-Bmxccz-M6m1-Hxdkg.webp',
-    'play guitar': 'https://i.ibb.co/MyqYv5cS/1-RLgidsi-DWtxpf-Y4y52-WLWA.webp',
-    'guitar': 'https://i.ibb.co/MyqYv5cS/1-RLgidsi-DWtxpf-Y4y52-WLWA.webp',
-    'take photographs': 'https://i.ibb.co/tP1YpWFG/1-f-R6-Yh5w77l-Iv-Sg-R4ldzj-TA.webp',
-    'Wolfgang': 'https://i.ibb.co/tTTgw7Md/1-q-zg-Zh-Kn-Cs6ab-K8-CIp-E00-Q.webp',
-    'my dog': 'https://i.ibb.co/tTTgw7Md/1-q-zg-Zh-Kn-Cs6ab-K8-CIp-E00-Q.webp',
-    'Bootstrap startup': 'https://i.ibb.co/psftCmn/1-sq-USg-c1x-GQx-Zd-QS4-L7f-Sw.webp',
-    'bootstrap startup': 'https://i.ibb.co/psftCmn/1-sq-USg-c1x-GQx-Zd-QS4-L7f-Sw.webp',
-    'non-linear': 'https://i.ibb.co/psftCmn/1-sq-USg-c1x-GQx-Zd-QS4-L7f-Sw.webp',
-    'career journey': 'https://i.ibb.co/psftCmn/1-sq-USg-c1x-GQx-Zd-QS4-L7f-Sw.webp',
-    'A-list brands': 'https://i.ibb.co/840YDJMT/1-6ft-VCi9-Pi-L1q47-Vskw-Mb-WA.webp',
-    'global scale': 'https://i.ibb.co/840YDJMT/1-6ft-VCi9-Pi-L1q47-Vskw-Mb-WA.webp',
-    'pink onesie': 'https://i.ibb.co/psftCmn/1-sq-USg-c1x-GQx-Zd-QS4-L7f-Sw.webp',
-    'pink onezie': 'https://i.ibb.co/psftCmn/1-sq-USg-c1x-GQx-Zd-QS4-L7f-Sw.webp',
-    'systems thinking': 'https://i.ibb.co/4wtq5p9V/1-g-C-cm-PMo-CAMgckq051lw-Zg.webp',
-    'hands-on prototyping': 'https://i.ibb.co/NdwrPWfV/1-Na-ZV6rc-Ew-RT55p-R12-BY0jg.webp',
-    'bridge design and development': 'https://i.ibb.co/2YMPHshQ/1-3gn-Cq0a4-Kb-Y8-MGJy-VKy-P-A.webp',
-    'photographs': 'https://i.ibb.co/tP1YpWFG/1-f-R6-Yh5w77l-Iv-Sg-R4ldzj-TA.webp',
-    'AI': 'https://i.ibb.co/DDw627yH/1-A-KU6r-Bmxccz-M6m1-Hxdkg.webp',
-    'uplift imagination': 'https://i.ibb.co/DPJM0yfz/1-k-Y6yg0chz7-Puu-Wgrl-YNMA.webp'
+    // ── The Professional Academic ──
+    'forty-one papers': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&q=80',
+    'twelve people read': 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1200&q=80',
+    'dense thinking walkable': 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1200&q=80',
+    'philosopher': 'https://images.unsplash.com/photo-1544717305-996b815c338c?w=1200&q=80',
+    'each sentence is a step': 'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=1200&q=80',
+    'felt context': 'https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?w=1200&q=80',
+    'academic prose': 'https://images.unsplash.com/photo-1415226597516-61cf94eb6c7a?w=1200&q=80',
+    'readable without being diminished': 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=1200&q=80',
+
+    // ── The Music Teacher ──
+    'PDF handout': 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=1200&q=80',
+    'Goldberg Variations': 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=1200&q=80',
+    'concert hall': 'https://images.unsplash.com/photo-1540908489236-15aac66d9a53?w=1200&q=80',
+    'manuscript page': 'https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=1200&q=80',
+    'inside the music': 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=1200&q=80',
+    'piano keys': 'https://images.unsplash.com/photo-1552422535-c45813c61732?w=1200&q=80',
+    'different kind of preparation': 'https://images.unsplash.com/photo-1444628838545-ac4016a5418a?w=1200&q=80',
+
+    // ── The Small Agency ──
+    'case study': 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200&q=80',
+    'sketch on a napkin': 'https://images.unsplash.com/photo-1568209865332-a15790aed756?w=1200&q=80',
+    'client call': 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=1200&q=80',
+    'data came back wrong': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80',
+    'felt the process': 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=80',
+    'trust is different': 'https://images.unsplash.com/photo-1444210971048-6130cf0c46cf?w=1200&q=80',
+    'pitch than a PDF': 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&q=80',
+
+    // ── The Large Agency ──
+    'award submissions': 'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=1200&q=80',
+    'credentials pages': 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80',
+    'capabilities deck': 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1200&q=80',
+    'one thing, deeply': 'https://images.unsplash.com/photo-1455849318743-b2233052fcff?w=1200&q=80',
+    'specific room': 'https://images.unsplash.com/photo-1577412647305-991150c7d163?w=1200&q=80',
+    'thought carefully': 'https://images.unsplash.com/photo-1488229297570-58520851e868?w=1200&q=80',
+
+    // ── The Individual ──
+    'not a writer': 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1200&q=80',
+    'photo dump': 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6?w=1200&q=80',
+    'lost someone': 'https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=1200&q=80',
+    'real artifact': 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=1200&q=80',
+    'kids to read': 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=1200&q=80',
+    'image carries': 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&q=80',
+    'actual experience': 'https://images.unsplash.com/photo-1504805572947-34fad45aed93?w=1200&q=80',
+
+    // ── The Creator ──
+    'two in the morning': 'https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=1200&q=80',
+    'architectural constraint': 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80',
+    'sentence-by-sentence reveal': 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1200&q=80',
+    'closer to installation': 'https://images.unsplash.com/photo-1541367777708-7905fe3296c0?w=1200&q=80',
+    'transported rather than informed': 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1200&q=80',
+    'hide UI mode': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80',
+    'readership': 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1200&q=80',
+    'proof of concept': 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200&q=80',
+
+    // ── Blank state / onboarding ──
+    'carry an image': 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&q=80',
+    'leaving for the last time': 'https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=1200&q=80',
+    'find its shape': 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&q=80',
+    'write something true': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1200&q=80',
+    'the format will hold it': 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&q=80',
+    'feeling of arrival': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80',
+    'pause after the period': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1200&q=80',
+    'small surgery': 'https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?w=1200&q=80',
+    'cursor blinking': 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=1200&q=80',
+    'write one sentence': 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=1200&q=80'
 }
-
 const phraseRegexMap = new Map();
 Object.keys(imageMap).forEach(phrase => {
     const escapedPhrase = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     phraseRegexMap.set(phrase, new RegExp(`\\b${escapedPhrase}\\b`, 'gi'));
 });
 
-const narrative = `The year is 2026. Burn and turn. Content churn. We fade fast into the void. What if we paused? What if reading felt intentional again? Beat by beat, beat for beat. From moment to movement. I loathe to be so bold [This is not some grand manifesto about the state of UX] — but may I say, conviction counters convention [Strong belief resists being carried by the current of convention.]
+const narrative = `That feeling of arrival.
 
-This is my curriculum vitae. [A polished portfolio seems disingenuous to me. Facts are never facts. Truths are almost always half-lies. Capabilities become curbed. We move through content that does not move us. It feels static. It feels stale. It feels safe.] My impetus. My innovations. Through the eyes and mind — and lens — of the beholder [The underlying mechanism that defines the user experience of this site concept is a 'stream of consciousness']
+It happens at the end of a sentence. [Not the beginning. Not somewhere in the middle. At the period — the moment the thought closes and becomes a thing.]
 
-//Truth be told, I'm building something beyond this. [] May this serve as a proof of concept — if not of the final product, but of my approach. But first, let me introduce myself properly.
-//I am Zack — Thinker & Maker. [musician, photographer, writer, roamer, wanderer, nomad, Metallica fan] A left-handed autodidact with an affinity for alliterative apropros. [sic] A self-taught designer who learned to code. [amongst many things] An observer, a ponderer, and a dreamer. An artist & craftsman. I seek not to disrupt, but to discover. [All em dashes in this piece were sourced from www.emdash.click]
+You know it as a reader. A sentence lands. Something shifts. You sit with it before the next one comes.
 
-I built my first computer circa 2005 into 2006. I immediately installed pirated copies of Adobe Photoshop and Illustrator. [bootstrap roots] While I didn't study at university long enough to graduate, [stop-out, not drop-out] I studied what I saw. [] I observed, amalgamated, and carried my craft through conviction. I read books, flipped through magazines, and took on client work. I created faux website concepts to understand designing for the medium. All this culminated in responding to a Craigslist post that changed everything. [] A garage startup in the suburbs of Philadelphia that would become my formal education.
+You know it as a writer too — maybe better.
 
-A turning point at Turn5 Inc. The kind of place where you wear the hat you want. I was handed a brand new PC and a Canon Rebel DSLR. Charged with designing for our web properties, product packaging, printed catalogues, emails and ads; all across multiple brand systems. Add product photography and retouching, specializing in color match and OEM quality. Photographing and retouching thousands of parts.
+The period is the decision. [Not the word. Not the sentence. The full stop. The moment you commit to what you just said.]//
 
-### Design By Data.
-Pivot to web design, focusing on email marketing and bespoke feature design. We designed everything from ground-up. We built a lifestyle brand that grew from ten to forty million per year during my time at Turn5. I played my part, but I wanted to escape suburbia with my eyes set on city life.
+### Most tools don’t honor that moment.
+They give you a cursor blinking past it. A word count that doesn’t care where you stopped. A paragraph that swallows the period whole and keeps going.
 
-### From Suburbs to the City.
-Leadnomics was shifty — paradigm shifty. [sic] We focused on lead generation across multiple verticals. But our cash cow were payday loans. [Look, I did not know this till after I started working there, but as I was merely the conduit, and not the lender, nor the shark, my conscience abided] Said bluntly, my job was to make it easy for our users to make catastrophic financial decisions. I achieved a 95.8% conversion rate using responsive design and rigorous testing. [I am not proud of this, per se; it was actually 98.5%, but that seems less believable] But the pay and perks were great — free lunches, flexible work, nice views. [seeing the city skyline from across the river behooved my next career move] Business bides by imperative, not by idealism.
+They were built for output. Writing isn’t output.
 
-### Re-evaluate, then engage.
-Nearing three years with this company, I found myself with a completely comminuted clavicle. [cycling slip along the Schuylkill River Trail] Karma? I think so. [It gave me a moment to pause, evaluate, and act] I spent my downtime learning to code — HTML, CSS, and JavaScript. I built an interactive haiku to test my skills — it wasn't profound, but it proved potential. Enter #agencylife.
+Writing is the pause after the period. The reread. The small surgery. The moment you realize the true sentence was the one before the one you just wrote.//
 
-One Sixty Over Ninety — my heartrate when offered a job as an Interaction Designer in Center City, Philadelphia. I took a pay cut to join their new Interactive Department, but I was there to learn. Clients included Comcast, Kent State, and the Philadelphia Eagles. We worked long days, longer nights, and short weekends. Lots of weekends.
+### This format was built inside that pause.
+You write a sentence. You place the period. The sentence enters the piece and becomes real. [Not a draft. Not a line in a document. A thing that exists, one at a time, in the order you meant.]
 
-//The culture demanded we dare. [to try; to push beyond] The agency invited creatives to take risks; operating and ideating beyond our comfort zone. The work wasn't scientific. It was expressive. It was novel. It was considered. As an interactive designer, I had a hand in every aspect of the creative process.
+Then you stop. You reflect. You rewrite. You reject. You arrive at the next true thing.
 
-### A Digital Product Shop.
-O3 World was an elevating experience. A digital product shop in the heart of Fishtown, Philly. We were Agile in nature and scrum led. [via a certified scrum master] We held daily stand-ups to manage projects for clients like La Colombe, Vertex, and SEIC. [E-commerce via Shopify; Web App for small business owners, and enterprise scale financial products]
-//We practiced true Lean UX methodologies. We workshopped with whiteboards. We wireframed with Balsamiq. We shipped.
+Then you write it down and end it with a period.//
 
-### A Bona Fide Dev Shop.
-Downtown from Fishtown was Workarea, where I worked on a proprietary SaaS platform. We skipped high-fidelity mockups for napkin sketches and direct collaboration with developers. We were a dev-shop through and through. We built things better, faster, smarter. The company sold, requiring I reframe my approach.
+### That rhythm has a name.
+The drop from the elevated to the plain. The sentence after the profound one. The one that just tells the truth.
 
-Enter FlightPath. Hello, New York City. Emerging from bankruptcy, the agency served the pharmaceutical sector. [then reduced from a bustling two-floor office in Midtown to a mere ten dedicated employees; with I being one to join them] They needed my help, and this was my foot-in-the-door to the NYC scene. [This was risky. It was not lucrative. Passable at best, but FlightPath was always only ever to be my runway]
-//
-Sure, this was risky, but I was already in motion. Here, I had influence. With that, came confidence. [I worked on rigorous WCAG compliance for our Pharma clients: Merck, Vetsulin; plus: Charter, Organic Girl, Goya, and several non-profits] I had agency at this agency. In some ways, my work drew inspiration from my environment [think signage, colors, wayfinding] Commuting from Philly to Manhattan — and back — every business day for a full year. Up and out by five o'clock; home by ten o'clock — maybe. Saw both Sunrise and Sunset every day away from home. Two skylines, three hours apart. Worth it? Totally.
+Bathos. [Lowercase. It belongs to every writer who has ever stopped after a period and started again.]//
 
-### From Midtown to Uptown.
-From Workarea to LiveArea. From IC to Manager. I owned the UX process for a gamut of B2B & B2C e-commerce brands. [via the Salesforce Commerce Cloud platform] It was the most ownership I had held to date. I ran discovery. I directed and delegated. I socialized my solutions. 
+### You’re here now.
+Write one sentence.
 
-### Workshopping.
-After several rounds of our client becoming increasingly overwhelmed and frustrated with unfamiliar process, I crafted "Cards Against Bad UX" to help clients empathize with users. [A card game played in workshops to humanize the user and depoliticize the design conversation] By shifting the conversation from features to feelings — from the guest user and content manager, not the executive stakeholder — we saved the contract. Clients don't always know what they want. They always know how something makes them feel.
+End it with a period.
 
-### COVID.
-Something shifted as the world worked through the COVID pandemic. Once familiar faces faded behind canceled cameras. Now shadows, muffled, or on mute. [meta commentary on the fascinating phenomena of people suddenly becoming introverts] Business is busyness.
+The format will do the rest.`
 
-Less time commuting, more time computing. Camera on. Game-face on. [I had enjoyed WFH priveleges since 2011, so this was nothing new]
-
-This is the Whey. For a fast-scrolling case-study, find your way to: zackgort.com. There, may you see some innovative thinking in the e-commerce and financial product space — frankly, I am pleased with it. [Case study: zackgort.com]
-
-//The logos get bigger from here — literally. Huge (Sentral). Code and Theory — from sixty-two floors up in One World Trade, working on TikTok For Business. Publicis Sapient — a year embedded in Digital Transformation for BNY Mellon, where I became the de facto lead because someone had to be. [I was not hired as one. I became one.] Each engagement taught me something. Some taught me what I wanted. Some taught me what I didn't. Some lessons learned. Some self-taught. Back to that autodidact in me.Full circle. What else is a circle? A Wheel. Rock & Roll.
-
-### Down But Not Out.
-Come on baby, let's do the twist. When I said rock & roll, I did not mean oldies. I thought I paid my dues. And so, I pivoted to low voltage contracting. [Bear with me] I learned to terminate an RJ45 in 30–45 seconds. I run cables, install security systems, and manage cable management in commercial and residential settings. It requires specific twist parity and a steady hand. I'm using different parts of my brain — the same brain that once wireframed enterprise banking platforms. [Humility is a hell of a teacher] I still have mouths to feed. I keep moving.
-
-As an aside, I've been building. I repurposed intoview.pro as a platform for creative exploration — it started as an interview tool and became something more personal. I built a note-taking app and a kanban board to scratch my own itch. I created emdash.click because the em dash is underused and undervalued, and the world needed a one-click solution. [Every em dash in this piece came from there] These aren't just portfolio pieces; they are functioning products that prove I can build — not just design.
-
-### Seek & Employ.
-Currently I'm seeking my next full-time role. I want work that matters with people who care. I am not looking for a title. I am looking for a team. I offer systems thinking and hands-on prototyping — I bridge design and development because I have lived on both sides of the handoff. [I have been the designer who couldn't explain the spec, and I became the one who could build it] I think. I make. I ship.
-
-### Work to Eat. Eat to Live. Live to Skate. Skate to Work.
-Beyond the work, there's music. I play guitar left-handed — started at fifteen, never stopped. [Metallica, Arctic Monkeys, and whatever is in the rotation that week] I take photographs of New York the way a tourist never would — alleys, fire escapes, the underside of the Williamsburg Bridge at 6am. I have a dog named Wolfgang. [he is a very good boy] I once chased and helped safely capture a wild zebra through the streets of West Philly. [true story; his name was Majesty; he was fine]
-//
-I am not worried about AI taking our jobs. My talent is presenting ideas that uplift imagination. I do this with capable hands, a curious mind, and twenty years of scar tissue. [I think different]
-
-### Connect.
-You can find my music on SoundCloud. My photography lives on Instagram. My full portfolio lives at zackgort.com. If something here moved you — even one sentence — I would love to hear from it. Thanks for reading one sentence at a time.`
 
 
 // ===================================
@@ -4426,10 +4221,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const toggle     = document.getElementById('composeToggle');
         const bar        = document.getElementById('composeBar');
         const input      = document.getElementById('composeInput');
-        const commit     = document.getElementById('composeCommit');
+        const commit     = document.getElementById('composeCommit'); // desktop only (not in DOM, kept for compat)
         const chapterSel = document.getElementById('composeChapterSelect');
         const wordCount  = document.getElementById('composeWordCount');
-        const bracketBtn = document.getElementById('composeBracketBtn');
+        const hudSubmit  = document.getElementById('hudSubmitBtn');   // mobile HUD submit
+        const mobileClose = document.getElementById('composeMobileClose');
+        const hintsBtn   = document.getElementById('composeHintsBtn');
         const picker     = document.getElementById('imagemapPicker');
         const pickerClose= document.getElementById('imagemapPickerClose');
         const pickerPhrase = document.getElementById('imagemapPickerPhrase');
@@ -4458,6 +4255,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // ── Toggle compose mode ──
+        // ── HUD nudge helpers ──
+        function nudgeHudAboveBar() {
+            if (window.innerWidth > 768) return;
+            const barH = bar.getBoundingClientRect().height;
+            if (barH > 0) statsWidget.style.bottom = `calc(${barH}px + 12px + env(safe-area-inset-bottom))`;
+        }
+
+        function restoreHud() {
+            if (window.innerWidth > 768) return;
+            statsWidget.style.bottom = 'calc(16px + env(safe-area-inset-bottom))';
+        }
+
         function enterCompose() {
             compose.active = true;
             document.body.classList.add('compose-mode');
@@ -4469,11 +4278,7 @@ document.addEventListener('DOMContentLoaded', () => {
             syncWriterStats();
             setTimeout(() => {
                 input.focus();
-                // On mobile, push HUD above the compose bar
-                if (window.innerWidth <= 768) {
-                    const barH = bar.getBoundingClientRect().height;
-                    statsWidget.style.bottom = `calc(${barH}px + 12px + env(safe-area-inset-bottom))`;
-                }
+                nudgeHudAboveBar();
             }, 350);
             syncComposeCluster();
         }
@@ -4486,10 +4291,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const hudCompose = document.getElementById('hudComposeBtn');
             if (hudCompose) hudCompose.classList.remove('active');
             Utils.$$('.sentence.editing').forEach(s => s.classList.remove('editing'));
-            // Restore HUD position on mobile
-            if (window.innerWidth <= 768) {
-                statsWidget.style.bottom = 'calc(16px + env(safe-area-inset-bottom))';
-            }
+            restoreHud();
             syncComposeCluster();
         }
 
@@ -4499,28 +4301,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
         toggle.addEventListener('click', toggleCompose);
 
-        // HUD compose button (mobile)
+        // HUD compose button (mobile — reader mode)
         const hudCompose = document.getElementById('hudComposeBtn');
         if (hudCompose) hudCompose.addEventListener('click', toggleCompose);
 
-        // Mobile close button inside compose bar
-        const mobileClose = document.getElementById('composeMobileClose');
+        // HUD submit button (mobile — compose mode)
+        if (hudSubmit) {
+            hudSubmit.disabled = true;
+            hudSubmit.addEventListener('click', commitSentence);
+        }
+
+        // Close button inside compose bar
         if (mobileClose) mobileClose.addEventListener('click', exitCompose);
+
+        // Hints tooltip button → fires a toast on mobile
+        if (hintsBtn) {
+            hintsBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                Toast.show({
+                    id: `compose-hints-${Date.now()}`,
+                    icon: '⌨️',
+                    message: '<span class="toast-accent">Enter</span> commit &nbsp;·&nbsp; <span class="toast-accent">Shift+Enter</span> line break &nbsp;·&nbsp; <span class="toast-accent">###</span> subchapter &nbsp;·&nbsp; <span class="toast-accent">dbl-tap</span> sentence to edit',
+                    duration: 10000,
+                    force: true
+                });
+            });
+        }
 
         // ── Input state ──
         input.addEventListener('input', () => {
-            const val = input.value.trim();
-            commit.disabled = val.length === 0;
+            const hasContent = input.value.trim().length > 0;
+            if (hudSubmit) hudSubmit.disabled = !hasContent;
             updateWordCount();
-            // Keep HUD above compose bar as it grows
-            if (window.innerWidth <= 768 && compose.active) {
-                const barH = bar.getBoundingClientRect().height;
-                statsWidget.style.bottom = `calc(${barH}px + 12px + env(safe-area-inset-bottom))`;
-            }
             // Auto-resize
             input.style.height = 'auto';
             input.style.height = Math.min(input.scrollHeight, 180) + 'px';
+            // Keep HUD above compose bar as it grows
+            nudgeHudAboveBar();
         });
+
+        // ResizeObserver keeps HUD above bar even if bar height changes for other reasons
+        if (typeof ResizeObserver !== 'undefined') {
+            new ResizeObserver(() => { if (compose.active) nudgeHudAboveBar(); }).observe(bar);
+        }
 
         function updateWordCount() {
             const words = input.value.trim().split(/\s+/).filter(Boolean).length;
@@ -4540,14 +4363,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // ── Commit sentence ──
         function commitSentence() {
-            let raw = input.value.trim();
+            const raw = input.value.trim();
             if (!raw) return;
-
-            // Auto-punctuate: add period if sentence doesn't end with punctuation
-            // (skip for special syntax: subchapter, line break)
-            if (!raw.startsWith('### ') && raw !== '//' && raw !== '/') {
-                if (!/[.!?…]$/.test(raw)) raw += '.';
-            }
 
             const stream = Utils.$('#stream');
             if (!stream) return;
@@ -4563,7 +4380,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 compose.editingIndex = -1;
                 input.value = '';
                 input.style.height = 'auto';
-                commit.disabled = true;
+                if (hudSubmit) hudSubmit.disabled = true;
                 updateWordCount();
                 return;
             }
@@ -4578,7 +4395,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 stream.appendChild(el);
                 input.value = '';
                 input.style.height = 'auto';
-                commit.disabled = true;
+                if (hudSubmit) hudSubmit.disabled = true;
                 updateWordCount();
                 return;
             }
@@ -4591,7 +4408,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 stream.appendChild(br);
                 input.value = '';
                 input.style.height = 'auto';
-                commit.disabled = true;
+                if (hudSubmit) hudSubmit.disabled = true;
                 updateWordCount();
                 return;
             }
@@ -4670,7 +4487,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             input.value = '';
             input.style.height = 'auto';
-            commit.disabled = true;
+            if (hudSubmit) hudSubmit.disabled = true;
             updateWordCount();
 
             // Scroll new sentence into view
@@ -4693,7 +4510,7 @@ document.addEventListener('DOMContentLoaded', () => {
             input.value = plain;
             input.style.height = 'auto';
             input.style.height = Math.min(input.scrollHeight, 180) + 'px';
-            commit.disabled = false;
+            if (hudSubmit) hudSubmit.disabled = false;
             input.focus();
             input.select();
             highlightSentence(index);
@@ -4733,8 +4550,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'ArrowDown' && e.metaKey) { e.preventDefault(); nextSentence(); }
         });
 
-        commit.addEventListener('click', commitSentence);
-
         // ── Bracket annotation quick-insert ──
         function insertBracket() {
             const pos = input.selectionStart;
@@ -4746,10 +4561,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const end = start + 15;
             input.focus();
             input.setSelectionRange(start, end);
-            commit.disabled = false;
+            if (hudSubmit) hudSubmit.disabled = false;
         }
 
-        bracketBtn.addEventListener('click', insertBracket);
         if (clusterBracket) clusterBracket.addEventListener('click', (e) => { e.stopPropagation(); insertBracket(); input.focus(); });
 
         // ── Subchapter quick-insert ──
@@ -4757,14 +4571,14 @@ document.addEventListener('DOMContentLoaded', () => {
             e.stopPropagation();
             input.value = '### ';
             input.focus();
-            commit.disabled = false;
+            if (hudSubmit) hudSubmit.disabled = false;
         });
 
         // ── Line break quick-insert ──
         if (clusterBreak) clusterBreak.addEventListener('click', (e) => {
             e.stopPropagation();
             input.value = '//';
-            commit.disabled = false;
+            if (hudSubmit) hudSubmit.disabled = false;
             commitSentence();
         });
 
