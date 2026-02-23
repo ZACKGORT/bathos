@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFIMAYBEFRANK — How It Works</title>
+    <title>Bathos — How It Works</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
 
 /* ===================================
-   ROOT — mirrors ifimaybefrank.com
+   ROOT — bathos.io
    =================================== */
 :root {
     --bg-color: #000000;
@@ -515,8 +515,8 @@ code {
     <!-- HEADER -->
     <header class="site-header">
         <div class="page-wrap">
-            <a href="/" class="header-brand">IFIMAYBEFRANK<span> ·</span> Zack Gort</a>
-            <span class="header-label">Mechanics / README</span>
+            <a href="https://bathos.io" class="header-brand">BATHOS<span> ·</span> bathos.io</a>
+            <span class="header-label">README · How It Works</span>
         </div>
     </header>
 
@@ -525,8 +525,8 @@ code {
         <!-- HERO -->
         <section class="hero">
             <p class="hero-eyebrow">How it works</p>
-            <h1>Every mechanic of<br><em>ifimaybefrank.com</em></h1>
-            <p class="hero-lead">This document covers the full interaction model — navigation, modes, image layer, annotations, keyboard shortcuts, accessibility, and the philosophy behind the decisions. Consider it the operator's manual.</p>
+            <h1>Every mechanic of<br><em>bathos.io</em></h1>
+            <p class="hero-lead">This document covers the full interaction model — navigation, compose, modes, image layer, annotations, keyboard shortcuts, accessibility, and the philosophy behind every decision. The operator's manual for a writing platform built around a single belief: the sentence that lands changes everything.</p>
         </section>
 
         <!-- TOC -->
@@ -545,6 +545,7 @@ code {
                 <li><span class="toc-num">10</span><a href="#mobile">Mobile</a></li>
                 <li><span class="toc-num">11</span><a href="#toasts">Toast System</a></li>
                 <li><span class="toc-num">12</span><a href="#accessibility">Accessibility</a></li>
+                <li><span class="toc-num">13</span><a href="#compose">Compose</a></li>
             </ul>
         </nav>
 
@@ -723,7 +724,7 @@ code {
                 <h2>Chapters &amp; Subchapters</h2>
             </div>
 
-            <p>The narrative is divided into 11 chapters, each beginning at a defined sentence. Chapters are structural — they group related content and provide jump targets. Subchapters are editorial — they title sections within a chapter without creating navigation targets.</p>
+            <p>The narrative is divided into chapters, each beginning at a defined sentence. Chapters are structural — they group related content and provide jump targets. Subchapters are editorial — they title sections within a chapter without creating navigation targets.</p>
 
             <div class="mechanic-block">
                 <p class="mechanic-title">Chapter Dropdown</p>
@@ -809,6 +810,11 @@ code {
                     <tr>
                         <td><span class="key-badge">Home</span></td>
                         <td class="key-action">Reset to first sentence</td>
+                    </tr>
+                    <tr>
+                    <tr>
+                        <td><span class="key-badge">E</span></td>
+                        <td class="key-action">Toggle Compose mode</td>
                     </tr>
                     <tr>
                         <td><span class="key-badge">Esc</span> <span class="key-badge">X</span></td>
@@ -898,7 +904,7 @@ code {
 
             <div class="mechanic-block">
                 <p class="mechanic-title">HUD Widget</p>
-                <p>A floating bar centered above the safe area at the bottom of the screen. Contains prev/next navigation buttons flanking the three stat counters. Animated entrance on load. In Read Mode, the widget ghosts to 8% opacity but both nav buttons remain fully interactive at full opacity.</p>
+                <p>A floating bar centered above the safe area at the bottom of the screen. On mobile, contains: a compose toggle (left), the three stat counters (center), and prev/next navigation buttons grouped together (right). The asymmetry is intentional — compose is a mode shift, navigation is a gesture. In Read Mode the widget ghosts to 8% opacity but nav buttons remain fully interactive.</p>
             </div>
 
             <div class="mechanic-block">
@@ -1003,13 +1009,68 @@ code {
             </div>
         </section>
 
+        
+        <!-- 13 COMPOSE -->
+        <section class="section" id="compose">
+            <div class="section-header">
+                <span class="section-num">13</span>
+                <h2>Compose</h2>
+            </div>
+
+            <p>Bathos is a CMS and a reading format simultaneously. The compose layer lets you write directly inside the piece — in the same environment where it will be read. There is no separate editor view.</p>
+
+            <div class="callout">
+                <p>The tool and the philosophy are the same thing. You can't write in Bathos without writing in the format. The wrong way is structurally impossible.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Entering Compose</p>
+                <p>Press <code>E</code> or click the pencil icon (center-bottom on desktop, leftmost button in the HUD on mobile). The compose bar rises from the bottom as a floating, draggable widget. The mode cluster morphs — reader keys are replaced with writer keys.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">The Compose Bar</p>
+                <p>A floating widget, draggable by its handle. Contains: a chapter selector, the sentence input, an image upload placeholder, and a commit button. Defaults to center-bottom on desktop. Position is freeform — drag it wherever suits your writing posture. On mobile it pins full-width to the bottom edge.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Committing a Sentence</p>
+                <p>Type a sentence. Press <code>Enter</code>. It enters the stream above and activates immediately — you read it the moment you write it. <code>Shift+Enter</code> inserts a line break within the input without committing. The period is the decision. The Enter key is the period.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Compose Markup</p>
+                <p>Three structural shorthands available in the input: <code>### Title</code> inserts a subchapter break. <code>//</code> alone inserts a line break spacer. <code>[ annotation ]</code> inserts a bracket annotation inline. These are the only format primitives — everything else is a sentence.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Editing</p>
+                <p>Double-click any sentence in the stream to pull it back into the input for editing. It highlights with an editing outline in the stream. Press Enter to re-commit. Press Escape to cancel and restore the original.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Writer Mode Cluster</p>
+                <p>In compose mode the mode cluster switches from reader keys to writer keys: <strong>[ ]</strong> Note, <strong>###</strong> Section, <strong>//</strong> Break, <strong>IMG</strong> Map, <strong>T</strong> Theme, <strong>DEL</strong> Delete. The stats widget relabels from Sentences/Brackets/Chapters to Written/Notes/Chapters.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Image Mapping</p>
+                <p>Press <code>IMG</code> in compose mode to open the image mapping picker. Select a phrase from the active sentence. Paste an image URL or pick from existing imageMap entries. The phrase becomes an image trigger in the stream immediately — the image arrives with the word, or not at all.</p>
+            </div>
+
+            <div class="mechanic-block">
+                <p class="mechanic-title">Navigation While Writing</p>
+                <p>Arrow key navigation works normally while the compose bar is open. Move through the piece, read what you've written, return to the input. The compose bar doesn't trap you. It waits.</p>
+            </div>
+        </section>
+
         <span class="ornament">· · ·</span>
 
         <!-- FOOTER -->
         <footer class="site-footer">
             <div class="page-wrap" style="padding:0">
-                <span class="footer-brand">IFIMAYBEFRANK · Zack Gort · 2026</span>
-                <a href="/" class="footer-link">← Back to the piece</a>
+                <span class="footer-brand">BATHOS™ · bathos.io · 2026</span>
+                <a href="https://bathos.io" class="footer-link">← Back to bathos.io</a>
             </div>
         </footer>
 
