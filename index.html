@@ -917,6 +917,29 @@ body.theme-transitioning::after {
 @keyframes bracketFadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ===================================
+   NARRATIVE LINKS
+   =================================== */
+.narrative-link {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    transition: color 0.2s ease, border-bottom-color 0.2s ease;
+    cursor: pointer;
+    display: inline;
+    font: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    position: relative;
+    z-index: 3;
+}
+.narrative-link:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+/* Prevent link clicks from also triggering sentence nav */
+.sentence .narrative-link { pointer-events: auto; }
+
+/* ===================================
    IMAGE TRIGGERS & HOVER
    =================================== */
 .image-trigger {
@@ -3143,6 +3166,16 @@ function parseNarrative(text) {
 // ===================================
 // IMAGE HANDLING
 // ===================================
+
+// Convert {link text|https://url.com} syntax into clickable <a> tags
+function wrapNarrativeLinks(text) {
+    return text.replace(/\{([^|{}]+)\|([^{}]+)\}/g, (match, linkText, url) => {
+        const safeUrl = url.trim().replace(/"/g, '&quot;');
+        const safeText = linkText.trim();
+        return `<a class="narrative-link" href="${safeUrl}" target="_blank" rel="noopener noreferrer">${safeText}</a>`;
+    });
+}
+
 function wrapImageTriggers(text) {
     let wrapped = text;
     for (const [phrase, url] of Object.entries(imageMap)) {
@@ -3620,10 +3653,10 @@ function render() {
             for (const [phrase, url] of Object.entries(imageMap)) {
                 if (part.text.includes(phrase)) { state.gridImages.push({ index: sentenceCount, text: part.text, url: url, chapterId: currentActiveChapter }); break; }
             }
-            span.innerHTML = wrapImageTriggers(part.text) + ' ';
+            span.innerHTML = wrapNarrativeLinks(wrapImageTriggers(part.text)) + ' ';
             span.addEventListener('mouseenter', () => { if (state.isTouch) return; const index = parseInt(span.dataset.sentenceIndex); state.allSentenceElements.forEach((s, i) => { s.style.opacity = i === index ? '0.7' : '0.25'; }); }, { passive: true });
             span.addEventListener('mouseleave', () => { if (state.isTouch) return; state.allSentenceElements.forEach(s => s.style.opacity = ''); }, { passive: true });
-            span.addEventListener('click', () => { state.currentSentenceIndex = parseInt(span.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); });
+            span.addEventListener('click', (e) => { if (e.target.closest('.narrative-link')) return; state.currentSentenceIndex = parseInt(span.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); });
             span.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') { e.preventDefault(); state.currentSentenceIndex = parseInt(span.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); }
             });
@@ -3652,10 +3685,10 @@ function render() {
             for (const [phrase, url] of Object.entries(imageMap)) {
                 if (part.text.includes(phrase)) { state.gridImages.push({ index: sentenceCount, text: part.text, url: url, chapterId: currentActiveChapter }); break; }
             }
-            li.innerHTML = '<span class="bullet-marker" aria-hidden="true">•</span> ' + wrapImageTriggers(part.text);
+            li.innerHTML = '<span class="bullet-marker" aria-hidden="true">•</span> ' + wrapNarrativeLinks(wrapImageTriggers(part.text));
             li.addEventListener('mouseenter', () => { if (state.isTouch) return; const index = parseInt(li.dataset.sentenceIndex); state.allSentenceElements.forEach((s, i) => { s.style.opacity = i === index ? '0.7' : '0.25'; }); }, { passive: true });
             li.addEventListener('mouseleave', () => { if (state.isTouch) return; state.allSentenceElements.forEach(s => s.style.opacity = ''); }, { passive: true });
-            li.addEventListener('click', () => { state.currentSentenceIndex = parseInt(li.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); });
+            li.addEventListener('click', (e) => { if (e.target.closest('.narrative-link')) return; state.currentSentenceIndex = parseInt(li.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); });
             li.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') { e.preventDefault(); state.currentSentenceIndex = parseInt(li.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); }
             });
@@ -3673,10 +3706,10 @@ function render() {
             for (const [phrase, url] of Object.entries(imageMap)) {
                 if (part.text.includes(phrase)) { state.gridImages.push({ index: sentenceCount, text: part.text, url: url, chapterId: currentActiveChapter }); break; }
             }
-            li.innerHTML = `<span class="numbered-marker" aria-hidden="true">${part.number}.</span> ` + wrapImageTriggers(part.text);
+            li.innerHTML = `<span class="numbered-marker" aria-hidden="true">${part.number}.</span> ` + wrapNarrativeLinks(wrapImageTriggers(part.text));
             li.addEventListener('mouseenter', () => { if (state.isTouch) return; const index = parseInt(li.dataset.sentenceIndex); state.allSentenceElements.forEach((s, i) => { s.style.opacity = i === index ? '0.7' : '0.25'; }); }, { passive: true });
             li.addEventListener('mouseleave', () => { if (state.isTouch) return; state.allSentenceElements.forEach(s => s.style.opacity = ''); }, { passive: true });
-            li.addEventListener('click', () => { state.currentSentenceIndex = parseInt(li.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); });
+            li.addEventListener('click', (e) => { if (e.target.closest('.narrative-link')) return; state.currentSentenceIndex = parseInt(li.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); });
             li.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') { e.preventDefault(); state.currentSentenceIndex = parseInt(li.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); }
             });
@@ -4331,7 +4364,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // ── Edit existing sentence ──
                 const el = state.allSentenceElements[compose.editingIndex];
                 if (el) {
-                    el.innerHTML = wrapImageTriggers(raw) + ' ';
+                    el.innerHTML = wrapNarrativeLinks(wrapImageTriggers(raw)) + ' ';
                     el.classList.remove('editing');
                     highlightSentence(compose.editingIndex);
                 }
@@ -4391,7 +4424,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            span.innerHTML = wrapImageTriggers(raw) + ' ';
+            span.innerHTML = wrapNarrativeLinks(wrapImageTriggers(raw)) + ' ';
 
             // Double-click to edit in compose mode
             span.addEventListener('dblclick', () => {
@@ -4605,7 +4638,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const el = state.allSentenceElements[state.currentSentenceIndex];
             if (el && el.textContent.includes(phrase)) {
                 const plain = el.textContent.replace(/\s+/g, ' ').trim();
-                el.innerHTML = wrapImageTriggers(plain) + ' ';
+                el.innerHTML = wrapNarrativeLinks(wrapImageTriggers(plain)) + ' ';
                 rewireStreamImageListeners();
                 highlightSentence(state.currentSentenceIndex);
             }
