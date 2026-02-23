@@ -427,7 +427,6 @@ body.layout-split .mobile-right-rail { display: none !important; }
     }
     .mode-drag-handle { display: none; }
     .mode-key#modeKeyF,
-    .mode-key#modeKeyH,
     .mode-key#modeKeyC,
     .mode-key#modeKeySpace { display: none; }
     .mode-key {
@@ -915,29 +914,6 @@ body.theme-transitioning::after {
 }
 .bracket-content.visible { display: inline; }
 @keyframes bracketFadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-
-/* ===================================
-   NARRATIVE LINKS
-   =================================== */
-.narrative-link {
-    color: inherit;
-    text-decoration: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
-    transition: color 0.2s ease, border-bottom-color 0.2s ease;
-    cursor: pointer;
-    display: inline;
-    font: inherit;
-    letter-spacing: inherit;
-    line-height: inherit;
-    position: relative;
-    z-index: 3;
-}
-.narrative-link:hover {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-}
-/* Prevent link clicks from also triggering sentence nav */
-.sentence .narrative-link { pointer-events: auto; }
 
 /* ===================================
    IMAGE TRIGGERS & HOVER
@@ -1855,6 +1831,16 @@ body.compose-mode .mode-key.reader-key { display: none; }
     background: var(--hover-tint);
 }
 
+/* HUD compose exit button — mobile only, compose mode only */
+.hud-compose-exit {
+    display: none;
+    color: var(--ink-3);
+    transition: color 0.15s ease, background 0.15s ease;
+}
+body.compose-mode .hud-compose-exit {
+    color: var(--accent);
+}
+
 /* HUD nav group — prev/next side by side */
 .hud-nav-group {
     display: flex;
@@ -1865,6 +1851,10 @@ body.compose-mode .mode-key.reader-key { display: none; }
 @media (max-width: 768px) {
     /* Show compose in HUD on mobile */
     .hud-compose-btn { display: flex; }
+    /* Show exit button in compose mode on mobile */
+    body.compose-mode .hud-compose-exit { display: flex; }
+    /* Hide compose toggle button when in compose (exit replaces it) */
+    body.compose-mode .hud-compose-btn { display: none; }
     /* Hide standalone compose toggle on mobile */
     .compose-toggle { display: none; }
 }
@@ -1917,6 +1907,28 @@ body.compose-mode .mode-key.reader-key { display: none; }
     border-color: var(--accent);
     color: var(--accent);
     background: var(--hover-tint);
+}
+
+/* Mobile-only close button inside compose bar */
+.compose-close-mobile {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--ink-3);
+    font-family: var(--ui-font);
+    font-size: 11px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    line-height: 1;
+}
+.compose-close-mobile:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+@media (max-width: 768px) {
+    .compose-close-mobile { display: block; }
 }
 
 /* Writer stats morph */
@@ -2010,6 +2022,10 @@ body.compose-mode { padding-bottom: 0; }
         <button class="hud-nav-btn hud-compose-btn" id="hudComposeBtn" aria-label="Toggle compose mode" title="Compose">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
         </button>
+        <!-- Compose exit button — mobile only, visible only in compose mode -->
+        <button class="hud-nav-btn hud-compose-exit" id="hudComposeExit" aria-label="Exit compose mode" title="Exit Compose">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
         <div class="hud-divider"></div>
         <div class="stats-group">
             <div class="stat-item">
@@ -2088,6 +2104,8 @@ body.compose-mode { padding-bottom: 0; }
                 <select class="compose-chapter-select" id="composeChapterSelect" aria-label="Select chapter">
                 </select>
                 <button class="compose-bracket-btn" id="composeBracketBtn" title="Insert bracket annotation">[+] Annotate</button>
+                <!-- Mobile-only close button — desktop uses Escape or the pencil toggle -->
+                <button class="compose-close-mobile" id="composeMobileClose" aria-label="Exit compose mode" title="Exit Compose">✕</button>
             </div>
         </div>
         <div class="compose-input-row">
@@ -3166,16 +3184,6 @@ function parseNarrative(text) {
 // ===================================
 // IMAGE HANDLING
 // ===================================
-
-// Convert {link text|https://url.com} syntax into clickable <a> tags
-function wrapNarrativeLinks(text) {
-    return text.replace(/\{([^|{}]+)\|([^{}]+)\}/g, (match, linkText, url) => {
-        const safeUrl = url.trim().replace(/"/g, '&quot;');
-        const safeText = linkText.trim();
-        return `<a class="narrative-link" href="${safeUrl}" target="_blank" rel="noopener noreferrer">${safeText}</a>`;
-    });
-}
-
 function wrapImageTriggers(text) {
     let wrapped = text;
     for (const [phrase, url] of Object.entries(imageMap)) {
@@ -3653,10 +3661,10 @@ function render() {
             for (const [phrase, url] of Object.entries(imageMap)) {
                 if (part.text.includes(phrase)) { state.gridImages.push({ index: sentenceCount, text: part.text, url: url, chapterId: currentActiveChapter }); break; }
             }
-            span.innerHTML = wrapNarrativeLinks(wrapImageTriggers(part.text)) + ' ';
+            span.innerHTML = wrapImageTriggers(part.text) + ' ';
             span.addEventListener('mouseenter', () => { if (state.isTouch) return; const index = parseInt(span.dataset.sentenceIndex); state.allSentenceElements.forEach((s, i) => { s.style.opacity = i === index ? '0.7' : '0.25'; }); }, { passive: true });
             span.addEventListener('mouseleave', () => { if (state.isTouch) return; state.allSentenceElements.forEach(s => s.style.opacity = ''); }, { passive: true });
-            span.addEventListener('click', (e) => { if (e.target.closest('.narrative-link')) return; state.currentSentenceIndex = parseInt(span.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); });
+            span.addEventListener('click', () => { state.currentSentenceIndex = parseInt(span.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); });
             span.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') { e.preventDefault(); state.currentSentenceIndex = parseInt(span.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); }
             });
@@ -3685,10 +3693,10 @@ function render() {
             for (const [phrase, url] of Object.entries(imageMap)) {
                 if (part.text.includes(phrase)) { state.gridImages.push({ index: sentenceCount, text: part.text, url: url, chapterId: currentActiveChapter }); break; }
             }
-            li.innerHTML = '<span class="bullet-marker" aria-hidden="true">•</span> ' + wrapNarrativeLinks(wrapImageTriggers(part.text));
+            li.innerHTML = '<span class="bullet-marker" aria-hidden="true">•</span> ' + wrapImageTriggers(part.text);
             li.addEventListener('mouseenter', () => { if (state.isTouch) return; const index = parseInt(li.dataset.sentenceIndex); state.allSentenceElements.forEach((s, i) => { s.style.opacity = i === index ? '0.7' : '0.25'; }); }, { passive: true });
             li.addEventListener('mouseleave', () => { if (state.isTouch) return; state.allSentenceElements.forEach(s => s.style.opacity = ''); }, { passive: true });
-            li.addEventListener('click', (e) => { if (e.target.closest('.narrative-link')) return; state.currentSentenceIndex = parseInt(li.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); });
+            li.addEventListener('click', () => { state.currentSentenceIndex = parseInt(li.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); });
             li.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') { e.preventDefault(); state.currentSentenceIndex = parseInt(li.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); }
             });
@@ -3706,10 +3714,10 @@ function render() {
             for (const [phrase, url] of Object.entries(imageMap)) {
                 if (part.text.includes(phrase)) { state.gridImages.push({ index: sentenceCount, text: part.text, url: url, chapterId: currentActiveChapter }); break; }
             }
-            li.innerHTML = `<span class="numbered-marker" aria-hidden="true">${part.number}.</span> ` + wrapNarrativeLinks(wrapImageTriggers(part.text));
+            li.innerHTML = `<span class="numbered-marker" aria-hidden="true">${part.number}.</span> ` + wrapImageTriggers(part.text);
             li.addEventListener('mouseenter', () => { if (state.isTouch) return; const index = parseInt(li.dataset.sentenceIndex); state.allSentenceElements.forEach((s, i) => { s.style.opacity = i === index ? '0.7' : '0.25'; }); }, { passive: true });
             li.addEventListener('mouseleave', () => { if (state.isTouch) return; state.allSentenceElements.forEach(s => s.style.opacity = ''); }, { passive: true });
-            li.addEventListener('click', (e) => { if (e.target.closest('.narrative-link')) return; state.currentSentenceIndex = parseInt(li.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); });
+            li.addEventListener('click', () => { state.currentSentenceIndex = parseInt(li.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); });
             li.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') { e.preventDefault(); state.currentSentenceIndex = parseInt(li.dataset.sentenceIndex); highlightSentence(state.currentSentenceIndex); }
             });
@@ -4301,7 +4309,14 @@ document.addEventListener('DOMContentLoaded', () => {
             populateChapterSelect();
             updateWordCount();
             syncWriterStats();
-            setTimeout(() => { input.focus(); }, 350);
+            setTimeout(() => {
+                input.focus();
+                // On mobile, push HUD above the compose bar
+                if (window.innerWidth <= 768) {
+                    const barH = bar.getBoundingClientRect().height;
+                    statsWidget.style.bottom = `calc(${barH}px + 12px + env(safe-area-inset-bottom))`;
+                }
+            }, 350);
             syncComposeCluster();
         }
 
@@ -4313,6 +4328,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const hudCompose = document.getElementById('hudComposeBtn');
             if (hudCompose) hudCompose.classList.remove('active');
             Utils.$$('.sentence.editing').forEach(s => s.classList.remove('editing'));
+            // Restore HUD position on mobile
+            if (window.innerWidth <= 768) {
+                statsWidget.style.bottom = 'calc(16px + env(safe-area-inset-bottom))';
+            }
             syncComposeCluster();
         }
 
@@ -4326,11 +4345,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const hudCompose = document.getElementById('hudComposeBtn');
         if (hudCompose) hudCompose.addEventListener('click', toggleCompose);
 
+        // Mobile close button inside compose bar
+        const mobileClose = document.getElementById('composeMobileClose');
+        if (mobileClose) mobileClose.addEventListener('click', exitCompose);
+
         // ── Input state ──
         input.addEventListener('input', () => {
             const val = input.value.trim();
             commit.disabled = val.length === 0;
             updateWordCount();
+            // Keep HUD above compose bar as it grows
+            if (window.innerWidth <= 768 && compose.active) {
+                const barH = bar.getBoundingClientRect().height;
+                statsWidget.style.bottom = `calc(${barH}px + 12px + env(safe-area-inset-bottom))`;
+            }
             // Auto-resize
             input.style.height = 'auto';
             input.style.height = Math.min(input.scrollHeight, 180) + 'px';
@@ -4354,8 +4382,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // ── Commit sentence ──
         function commitSentence() {
-            const raw = input.value.trim();
+            let raw = input.value.trim();
             if (!raw) return;
+
+            // Auto-punctuate: add period if sentence doesn't end with punctuation
+            // (skip for special syntax: subchapter, line break)
+            if (!raw.startsWith('### ') && raw !== '//' && raw !== '/') {
+                if (!/[.!?…]$/.test(raw)) raw += '.';
+            }
 
             const stream = Utils.$('#stream');
             if (!stream) return;
@@ -4364,7 +4398,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // ── Edit existing sentence ──
                 const el = state.allSentenceElements[compose.editingIndex];
                 if (el) {
-                    el.innerHTML = wrapNarrativeLinks(wrapImageTriggers(raw)) + ' ';
+                    el.innerHTML = wrapImageTriggers(raw) + ' ';
                     el.classList.remove('editing');
                     highlightSentence(compose.editingIndex);
                 }
@@ -4424,7 +4458,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            span.innerHTML = wrapNarrativeLinks(wrapImageTriggers(raw)) + ' ';
+            span.innerHTML = wrapImageTriggers(raw) + ' ';
 
             // Double-click to edit in compose mode
             span.addEventListener('dblclick', () => {
@@ -4638,7 +4672,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const el = state.allSentenceElements[state.currentSentenceIndex];
             if (el && el.textContent.includes(phrase)) {
                 const plain = el.textContent.replace(/\s+/g, ' ').trim();
-                el.innerHTML = wrapNarrativeLinks(wrapImageTriggers(plain)) + ' ';
+                el.innerHTML = wrapImageTriggers(plain) + ' ';
                 rewireStreamImageListeners();
                 highlightSentence(state.currentSentenceIndex);
             }
