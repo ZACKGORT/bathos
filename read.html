@@ -426,6 +426,56 @@ code {
 /* ===================================
    DIVIDERS / ORNAMENTS
    =================================== */
+
+/* ===================================
+   MANIFESTO
+   =================================== */
+.manifesto-body {
+    padding: 8px 0 16px;
+}
+
+.manifesto-body p {
+    font-family: var(--body-font);
+    font-size: clamp(18px, 2vw, 22px);
+    line-height: 1.65;
+    color: var(--ink-2);
+    margin: 0 0 0.15em;
+    padding: 0;
+}
+
+.manifesto-body p + p {
+    margin-top: 0;
+}
+
+/* Short isolated lines get a bit more space above */
+.manifesto-body p:has(+ .manifesto-rule),
+.manifesto-rule + p {
+    margin-top: 0;
+}
+
+.manifesto-body code {
+    font-family: var(--ui-font);
+    font-size: 0.72em;
+    color: var(--accent);
+    background: rgba(218,165,32,0.08);
+    padding: 2px 5px;
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+}
+
+.manifesto-rule {
+    width: 32px;
+    height: 1px;
+    background: rgba(255,255,255,0.12);
+    margin: 2em 0;
+}
+
+.manifesto-close {
+    color: var(--ink) !important;
+    font-style: italic;
+    margin-top: 0.5em !important;
+}
+
 .ornament {
     display: block;
     text-align: center;
@@ -533,6 +583,7 @@ code {
         <nav class="toc" aria-label="Table of contents">
             <p class="toc-label">Contents</p>
             <ul class="toc-list">
+                <li><span class="toc-num">00</span><a href="#manifesto">Manifesto</a></li>
                 <li><span class="toc-num">01</span><a href="#navigation">Navigation</a></li>
                 <li><span class="toc-num">02</span><a href="#sentence-stream">Sentence Stream</a></li>
                 <li><span class="toc-num">03</span><a href="#image-layer">Image Layer</a></li>
@@ -548,6 +599,103 @@ code {
                 <li><span class="toc-num">13</span><a href="#compose">Compose</a></li>
             </ul>
         </nav>
+
+
+        <!-- 00 MANIFESTO -->
+        <section class="section" id="manifesto">
+            <div class="section-header">
+                <span class="section-num">00</span>
+                <h2>Manifesto</h2>
+            </div>
+
+            <div class="manifesto-body">
+                <p>You have something to say.</p>
+                <p>You open the app.</p>
+                <p>The cursor blinks.</p>
+                <p>You write a sentence — a real one, true and considered — and the format swallows it whole.</p>
+                <p>It becomes content.</p>
+                <p>It becomes a post.</p>
+                <p>It becomes something for the algorithm to measure, for strangers to scroll past, for engagement to happen to.</p>
+                <p>The sentence deserved better.</p>
+
+                <div class="manifesto-rule"></div>
+
+                <p>Every tool we use to write was built for output.</p>
+                <p>Not for thought.</p>
+                <p>Not for the pause after the period.</p>
+                <p>Not for the moment when a sentence lands and you sit with it before the next one comes.</p>
+                <p>For output.</p>
+                <p>The document that never ends.</p>
+                <p>The thread that demands a hook.</p>
+                <p>The carousel that needs three takeaways and a call to action.</p>
+                <p>The feed that treats your most considered thought the same as everyone else's least considered one.</p>
+
+                <div class="manifesto-rule"></div>
+
+                <p>We didn't lose our attention.</p>
+                <p>We gave it away, one scroll at a time, to formats that were never designed to hold it.</p>
+
+                <div class="manifesto-rule"></div>
+
+                <p>There is a different rhythm.</p>
+                <p>You know it.</p>
+                <p>You felt it the last time you read something that actually stopped you.</p>
+                <p>A sentence landed.</p>
+                <p>Something shifted.</p>
+                <p>You sat with it.</p>
+                <p>That is not an accident.</p>
+                <p>That is a format doing its job.</p>
+
+                <div class="manifesto-rule"></div>
+
+                <p>Bathos is built inside that pause.</p>
+                <p>One sentence.</p>
+                <p>One period.</p>
+                <p>One decision.</p>
+                <p>The sentence enters the piece and becomes real — not a draft, not a line in a document, not a post.</p>
+                <p>A thing that exists, in the order you meant, permanent until you choose otherwise.</p>
+                <p>Then you stop.</p>
+                <p>Then you write the next true thing.</p>
+
+                <div class="manifesto-rule"></div>
+
+                <p>The name is intentional.</p>
+                <p>Bathos: the drop from the elevated to the plain.</p>
+                <p>The sentence after the profound one.</p>
+                <p>The one that just tells the truth.</p>
+                <p>Every writer knows it.</p>
+                <p>The moment you stop performing and start saying.</p>
+                <p>Lowercase.</p>
+                <p>It belongs to everyone who has ever stopped after a period and started again.</p>
+
+                <div class="manifesto-rule"></div>
+
+                <p>This is not a social network.</p>
+                <p>There are no likes.</p>
+                <p>There is no algorithm deciding what you see next.</p>
+                <p>There is no feed.</p>
+                <p>There is the piece.</p>
+                <p>There is the reader.</p>
+                <p>There is the sentence between them.</p>
+
+                <div class="manifesto-rule"></div>
+
+                <p>The hashtag here means something.</p>
+                <p><code>#:</code> is a breath.</p>
+                <p><code>##:</code> is a turn.</p>
+                <p><code>###:</code> is a new chapter beginning.</p>
+                <p>Not a category.</p>
+                <p>Not a trending topic.</p>
+                <p>Not a way to be found by people who were never looking for you.</p>
+                <p>A markup language for the intentional.</p>
+
+                <div class="manifesto-rule"></div>
+
+                <p>Write one sentence.</p>
+                <p>End it with a period.</p>
+                <p class="manifesto-close">The format will do the rest.</p>
+            </div>
+        </section>
 
         <!-- 01 NAVIGATION -->
         <section class="section" id="navigation">
